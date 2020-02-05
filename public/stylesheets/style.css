@@ -60,6 +60,7 @@ body {
   border: none;
   background-color: #363c3a;
   border-radius: 4px;
+  cursor: pointer;
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.171);
 }
 .btn.big {
