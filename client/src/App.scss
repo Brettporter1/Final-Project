@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,600i,900&display=swap");
+
+$black: #262928;
+$darkGray: #363c3a;
+$medGray: #5e6462;
+$lightGray: #c5c2b8;
+$light: #eae7e5;
+$accent: #fba23b;
+
+//
+
+$headerHeight: 75px;
+
+* {
+    font-family: "Nunito Sans", sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: $darkGray;
+}
+button {
+    background: none;
+    border: none;
+}
+
+/// Utilities ////
+form {
+    display: block;
+}
+input {
+    display: block;
+    padding: 7px 20px;
+    font-size: 20px;
+    font-weight: 600;
+    font-style: italic;
+    color: $accent;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    width: calc(100% - 80px);
+    background-color: $medGray;
+    border: none;
+
+    &::placeholder {
+        color: $lightGray;
+    }
+}
+.btn {
+    font-weight: 600;
+    font-style: italic;
+    color: $accent;
+    border-radius: 4px;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.171);
+    &.big {
+        display: block;
+        padding: 10px 20px;
+        font-size: 20px;
+        margin-bottom: 30px;
+        width: calc(100% - 80px);
+    }
+    &.outline {
+        border: 1px solid $accent;
+    }
+    &.fill-gray {
+        background-color: $medGray;
+    }
+}
+//////////// HEADER ///////////////
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: $headerHeight;
+
+    h1 {
+        font-weight: 600;
+        font-size: 24px;
+        letter-spacing: 3px;
+        color: $accent;
+    }
+    .menu-btn {
+        padding: 0;
+        svg {
+            height: 35px;
+            width: 35px;
+            path {
+                fill: $accent;
+            }
+        }
+    }
+    .sign-in-btn {
+        color: $accent;
+        font-weight: 600;
+        font-style: italic;
+        border: 1px solid $accent;
+        padding: 3px 5px;
+        border-radius: 4px;
+    }
+}
+
+///////// LOGIN //////////////
+
+.login-component {
+    max-width: 500px;
+    margin: 0px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - (#{$headerHeight} * 2));
+    h1 {
+        font-weight: 600;
+        font-size: 24px;
+        letter-spacing: 3px;
+        color: $accent;
+        margin-bottom: 50px;
+    }
+
+    .actions-initial {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+}
