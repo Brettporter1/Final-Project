@@ -1,4 +1,25 @@
 extends layout
 
 block content
-    h1 About
+    header.desktop-only
+        h2 PODCHAT
+    section.about-mobile-logo
+        img.about-logo(src="/images/podchat.svg")
+        h2 PODCHAT
+    section.about-container
+        .person-container
+            img(src="/images/isaac.jpeg")
+            h2.about-name Isaac Janzen
+            p.about-info Random bullshit
+        .person-container
+            img(src="/images/marc.png")
+            h2.about-name Marc Farias Jones
+            p.about-info Random bullshit
+        .person-container
+            img(src="/images/david.jpeg")
+            h2.about-name David Henderson
+            p.about-info Random bullshit
+        .person-container
+            img(src="/images/brett.jpg")
+            h2.about-name Brett Porter
+            p.about-info Random bullshitw
