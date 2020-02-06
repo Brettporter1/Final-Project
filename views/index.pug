@@ -1,5 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  header.desktop-only
+    h2 PODCHAT
+  section.mobile-only
+    img.logo(src="/images/podchat.svg")
+    h2 PODCHAT
+    button.btn.big.outline LOGIN
+    button.btn.big.fill-gray REGISTER
+  section.home-main.desktop-only
+    h1 Welcome to the Podcast Community
+    p Join the conversation in real time with your favorite podcasts <br>and a network of psychopaths!
+    button.btn.big.outline LOGIN
+    button.btn.big.fill-gray REGISTER
