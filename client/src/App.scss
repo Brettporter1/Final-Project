@@ -133,3 +133,20 @@ header {
         width: 100%;
     }
 }
+
+// SEARCH //
+
+.search-component {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    form {
+        margin-top: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    li {
+        color: $light;
+    }
+}
