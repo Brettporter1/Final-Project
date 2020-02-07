@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import {DebounceInput} from 'react-debounce-input';
 import {Link} from 'react-router-dom';
+import ChannelContext from '../../utils/ChannelContext'
 
 
 const SearchBar = () => {
+    const {selectedChannel, setSelectedChannel} = useContext(ChannelContext);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     useEffect(() => {
@@ -26,9 +28,15 @@ const SearchBar = () => {
     )
 
     const resultsList = searchResults.map((podcast, i) => {
+        
         const link = `/channel/${podcast.collectionId}`
         return (
-            <Link to={link} key={i} className="search-listing">
+            <Link 
+                to={link} 
+                key={i} 
+                className="search-listing"
+                onClick={() => {setSelectedChannel(podcast)}}
+            >
                 <img src={podcast.artworkUrl60} alt={podcast.collectionName} className="thumb"/>
                 <div className="desc">
                     <h3>

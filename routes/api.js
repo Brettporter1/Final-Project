@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const convert = require('xml-js');
 const User = require('../models/user');
 
 const router = express.Router();
@@ -24,10 +25,30 @@ router.get('/searchpodcasts/:term', function(req, res, next) {
   axios
     .get(`https://itunes.apple.com/search?media=podcast&term=${term}`)
     .then(response => {
-      console.log(response);
+      // console.log(response);
       podcasts = response.data;
       console.log(podcasts);
       res.json(podcasts);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+router.post('/rss', function(req, res, next) {
+  const { url } = req.body;
+  console.log(url);
+  axios
+    .get(url)
+    .then(response => {
+      // console.log(response);
+      const options = {
+        ignoreComment: true,
+        alwaysChildren: false,
+        compact: true,
+      };
+      const rssJson = convert.xml2js(response.data, options);
+      console.log(rssJson);
+      res.json(rssJson.rss.channel.item);
     })
     .catch(err => {
       console.log(err);
