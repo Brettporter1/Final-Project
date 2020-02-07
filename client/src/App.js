@@ -5,6 +5,7 @@ import './App.scss';
 import Header from './components/Header';
 import Login from './components/Login';
 import Library from './components/Library';
+import Channel from './pages/Channel'
 function App() {
   return (
     <div className="App">
@@ -17,8 +18,8 @@ function App() {
         <Route path="/library">
           <Library />
         </Route>
-        <Route path="/dicks">
-          <Login />
+        <Route path="/channel/:id">
+          <Channel />
         </Route>
       </Switch>
     </Router>

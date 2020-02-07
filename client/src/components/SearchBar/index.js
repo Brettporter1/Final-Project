@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {DebounceInput} from 'react-debounce-input';
+import {Link} from 'react-router-dom';
+
 
 const SearchBar = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -24,17 +26,28 @@ const SearchBar = () => {
     )
 
     const resultsList = searchResults.map((podcast, i) => {
+        const link = `/channel/${podcast.collectionId}`
         return (
-            <li key={i}>{podcast.collectionName}</li>
+            <Link to={link} key={i} className="search-listing">
+                <img src={podcast.artworkUrl60} alt={podcast.collectionName} className="thumb"/>
+                <div className="desc">
+                    <h3>
+                        {podcast.collectionName}
+                    </h3>
+                    <p>
+                        {podcast.artistName}
+                    </p>
+                </div>
+            </Link>
         )
     });
 
   return(
 
     <div className="search-component">
-      <form action="#">
+      <form action="#" onSubmit={(e) => e.preventDefault()}>
         <DebounceInput
-            minLength={0}
+            minLength={1}
             debounceTimeout={300}
             type="text" 
             value={searchTerm} 
@@ -44,12 +57,11 @@ const SearchBar = () => {
       
       <div className="results-list">
           { searchResults.length || !searchTerm.Length ? (
-
-          <ul>
-            {resultsList}
-          </ul>
+              <div>
+                  {resultsList}
+              </div>
           ) : (
-              <p>Sooorry no results</p>
+              <p>Sorry, no results</p>
           )
           }
       </div>
