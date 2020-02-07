@@ -5,13 +5,17 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 const aboutRouter = require('./routes/about');
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -29,6 +33,24 @@ app.use(
   })
 );
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('trust proxy', 1); // trust first proxy
+app.use(
+  session({
+    secret: 'dasdasdas4324213',
+    // resave: false,
+    // saveUninitialized: true,
+    // cookie: { secure: true },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+const User = require('./models/user');
+
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
