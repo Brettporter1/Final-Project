@@ -13,6 +13,8 @@ import PlayContext from './utils/PlayContext'
 function App() {
 
   const [currentTrack, setCurrentTrack] = useState({
+    author: '',
+    title: '',
     track: '',
     playing: false,
     progress : 0
