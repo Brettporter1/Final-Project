@@ -1,6 +1,6 @@
-import React, {useState, createContext} from 'react';
+import React, {useState, createContext, useEffect} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-
+import {Howl, Howler} from 'howler';
 import './App.scss';
 import Header from './components/Header';
 import Login from './components/Login';
@@ -10,8 +10,17 @@ import Channel from './pages/Channel';
 import ChannelContext from './utils/ChannelContext'
 import PlayContext from './utils/PlayContext'
 
+let unlocker;
 function App() {
-
+  useEffect(() => {
+    unlocker = new Howl({
+      src: ['/audio/silence.mp3'],
+      preload: false,
+      html5: true,
+      
+  });
+  }, [])
+  
   const [currentTrack, setCurrentTrack] = useState({
     author: '',
     title: '',
@@ -38,10 +47,7 @@ function App() {
             </Route>
           </Switch>
         </Router>
-        {currentTrack.track ?
-          <Player/>
-          : null
-        }
+        <Player/>
       </ChannelContext.Provider>
     </PlayContext.Provider>
     </div>
