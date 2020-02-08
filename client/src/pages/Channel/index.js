@@ -15,8 +15,8 @@ const Channel = () => {
         
     }, []);
 
-    const listTracks = tracks.map(track =>
-        <button key={track.guid}>
+    const listTracks = tracks.map((track, i) =>
+        <button key={i}>
             <p>{track.pubDate._text}</p>
             <h3>{track.title._text}</h3>
         </button>
