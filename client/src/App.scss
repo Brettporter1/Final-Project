@@ -227,6 +227,8 @@ header {
         }
     }
     .track-list {
+        max-width: 600px;
+        margin: 0 auto;
         button {
             width: calc(100% - 40px);
             background-color: $medGray;
@@ -240,6 +242,85 @@ header {
                 color: $light;
                 font-weight: 600;
             }
+            .date {
+                color: $lightGray;
+                font-size: 0.8rem;
+                margin: 0;
+                margin-top: -5px;
+                margin-bottom: 5px;
+            }
+        }
+    }
+}
+
+/// Player ////
+
+.player-component {
+    position: fixed;
+    min-height: 50px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .progress-bar {
+        width: 100%;
+        height: 66px;
+        z-index: -1;
+    }
+    .controls {
+        background-color: $medGray;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        box-shadow: 0px -2px 10px 0px #262928c2, 0px -5px 20px 0px #262928b0;
+        .inner {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            padding: 10px;
+        }
+    }
+
+    .previous,
+    .next {
+        svg {
+            height: 40px;
+            width: 40px;
+        }
+        path {
+            fill: $darkGray;
+        }
+    }
+    .play,
+    .pause {
+        flex-shrink: 0;
+        width: 55px;
+        height: 55px;
+        background-color: $darkGray;
+        border-radius: 1000px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        svg {
+            height: 40px;
+            width: 40px;
+            transform: translateX(2px);
+        }
+    }
+    .pause {
+        svg {
+            transform: translateX(0px);
+        }
+    }
+    .loading-bar {
+        width: 100%;
+        .loading-inner {
+            width: 0;
+            background-color: $accent;
+            height: 5px;
         }
     }
 }
