@@ -317,10 +317,26 @@ header {
     }
     .loading-bar {
         width: 100%;
-        .loading-inner {
-            width: 0;
+    }
+    .progress-bar {
+        width: 100%;
+        display: relative;
+
+        height: 10px;
+        .progress-inner {
+            height: 10px;
             background-color: $accent;
-            height: 5px;
+            width: 0;
+        }
+        .loading-inner {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 10px;
+            z-index: -1;
+            background-color: $accent;
+            background-color: transparentize($accent, $amount: 0.4);
         }
     }
 }

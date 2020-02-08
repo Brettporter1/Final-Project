@@ -11,9 +11,11 @@ import ChannelContext from './utils/ChannelContext'
 import PlayContext from './utils/PlayContext'
 
 function App() {
+
   const [currentTrack, setCurrentTrack] = useState({
     track: '',
-    playing: false
+    playing: false,
+    progress : 0
   });
   const [selectedChannel, setSelectedChannel] = useState({});
   return (
@@ -34,7 +36,10 @@ function App() {
             </Route>
           </Switch>
         </Router>
-        <Player />
+        {currentTrack.track ?
+          <Player/>
+          : null
+        }
       </ChannelContext.Provider>
     </PlayContext.Provider>
     </div>

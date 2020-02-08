@@ -19,7 +19,7 @@ const Channel = () => {
     }, []);
    
     const listTracks = tracks.map((track, i) =>
-        <button key={i} onClick={() => setCurrentTrack({...currentTrack, track: track.enclosure._attributes.url, playing: true})}>
+        <button key={i} onClick={() => setCurrentTrack({...currentTrack, track: track.enclosure._attributes.url})}>
             <p className="date">{track.pubDate._text}</p>
             <h3>{track.title._text}</h3>
         </button>
