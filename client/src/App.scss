@@ -15,9 +15,14 @@ $headerHeight: 75px;
     font-family: "Nunito Sans", sans-serif;
     box-sizing: border-box;
 }
+html {
+    overflow-x: hidden;
+}
 
 body {
     background-color: $darkGray;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 button {
     background: none;
@@ -143,6 +148,8 @@ header {
 
 .search-component {
     width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     form {
@@ -210,16 +217,64 @@ header {
             overflow: hidden;
         }
     }
+    .sorry {
+        text-align: center;
+        color: $accent;
+        margin: 0;
+    }
 }
 
 /// Channel ////
 
 .channel-container {
     max-width: 100vw;
+    overflow: hidden;
+    margin-top: -$headerHeight;
+    padding-top: $headerHeight;
+    min-height: 100vh;
     .title-container {
+        position: relative;
         text-align: center;
         width: 100%;
         padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        .backdrop {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            z-index: -1;
+            img {
+                position: absolute;
+                display: block;
+                width: 100%;
+                height: 170%;
+                top: -$headerHeight;
+                left: 0;
+                filter: grayscale(0.8) blur(5px);
+                object-fit: cover;
+                object-position: center center;
+                box-shadow: none;
+            }
+            .overlay {
+                position: absolute;
+                width: calc(100% + 100px);
+                height: calc(170% + 50px);
+                top: -$headerHeight;
+                left: -50px;
+                background-size: cover;
+
+                background: radial-gradient(
+                    circle,
+                    rgba(54, 60, 58, 0.7) 0%,
+                    rgba(54, 60, 58, 1) 60%,
+                    rgb(54, 60, 58) 90%
+                );
+            }
+        }
         h1 {
             color: $light;
             font-weight: 600;
@@ -227,24 +282,28 @@ header {
         }
         img {
             width: 150px;
-            box-shadow: 0px 3px 10px 0px opacify($black, $amount: 0.3);
+            box-shadow: 0px 5px 10px -2px transparentize($black, 0.7),
+                0px 0px 25px 0px transparentize($black, 0.5);
         }
     }
     .track-list {
         max-width: 600px;
         margin: 0 auto;
-        button {
+        .track-card {
             width: calc(100% - 40px);
             background-color: $medGray;
-            margin: 5px 20px;
+            margin: 10px 20px;
+
             border-radius: 4px;
             box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.123);
             text-align: left;
             padding: 20px;
+            padding-bottom: 15px;
             h3 {
                 margin: 0;
                 color: $light;
                 font-weight: 600;
+                margin-bottom: 10px;
             }
             .date {
                 color: $lightGray;
@@ -252,6 +311,92 @@ header {
                 margin: 0;
                 margin-top: -5px;
                 margin-bottom: 5px;
+            }
+            .progress {
+                height: 3px;
+                width: 100%;
+                position: relative;
+                background: $darkGray;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+            .details {
+                margin-right: auto;
+                display: inline-block;
+
+                span {
+                    background: $darkGray;
+                    font-size: 0.8rem;
+                    color: $lightGray;
+                    border-radius: 4px;
+                    padding: 5px 10px;
+                    margin-right: 12px;
+                }
+            }
+            .controls {
+                display: flex;
+                align-items: center;
+                flex-wrap: nowrap;
+                margin-top: 10px;
+            }
+            .play {
+                margin-left: auto;
+                padding: 10px;
+                width: 44px;
+                height: 44px;
+                border-radius: 100px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 3px solid $darkGray;
+                svg {
+                    transform: scale(1.4);
+                    path {
+                        transform: translateX(2px) translateY(-3px);
+                        fill: $darkGray;
+                    }
+                }
+                &:hover {
+                    background-color: $darkGray;
+                    svg path {
+                        fill: $medGray;
+                    }
+                }
+            }
+        }
+    }
+    .loader {
+        width: 100%;
+        max-width: 300px;
+        padding: 20px;
+        margin: 50px auto;
+        display: flex;
+        justify-content: space-between;
+        div {
+            width: 20px;
+            height: 20px;
+            border-radius: 100px;
+            background-color: $accent;
+            animation: loading 2s infinite ease-in-out;
+            opacity: 0.5;
+        }
+        .circ2 {
+            animation-delay: 0.3s;
+        }
+        .circ3 {
+            animation-delay: 0.6s;
+        }
+        @keyframes loading {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            // 30% {
+            //     transform: scale(2);
+            // }
+            50% {
+                transform: scale(2.6) translateY(20px);
+                opacity: 1;
             }
         }
     }
@@ -333,6 +478,11 @@ header {
         path {
             fill: $darkGray;
         }
+        &:hover {
+            svg path {
+                fill: $black;
+            }
+        }
     }
     .next {
         margin-right: 5px;
@@ -351,6 +501,9 @@ header {
             height: 40px;
             width: 40px;
             transform: translateX(2px);
+        }
+        &:hover {
+            background-color: $black;
         }
     }
     .pause {

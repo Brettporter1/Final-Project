@@ -84,49 +84,46 @@ const Player = () => {
         }
         // console.log(percent);
     }
-    if (currentTrack.track) {
-        return(
-            <animated.div style={transition} className="player-component">
-                <div className="progress-bar" onClick={(e) => seek(e)}>
-                    <div style={{width: `${ progress }%`}} className="progress-inner"></div>
-                    <div className="loading-inner" style={{width: `${loading}%`}}></div>
+    return(
+        <animated.div style={transition} className="player-component">
+            <div className="progress-bar" onClick={(e) => seek(e)}>
+                <div style={{width: `${ progress }%`}} className="progress-inner"></div>
+                <div className="loading-inner" style={{width: `${loading}%`}}></div>
+            </div>
+            <div className="controls">
+                <div className="desc">
+                    <h4>{currentTrack.author}</h4>
+                    <p>{currentTrack.title}</p>
+
                 </div>
-                <div className="controls">
-                    <div className="desc">
-                        <h4>{currentTrack.author}</h4>
-                        <p>{currentTrack.title}</p>
+                <div className="inner">
+                    <button className="previous">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M16 7l-7 5l7 5zm-7 5V7H7v10h2z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
+                    </button>
+                    <button className="next">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M7 7v10l7-5zm9 10V7h-2v10z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
+                    </button>
+                    {!currentTrack.playing ? (
 
-                    </div>
-                    <div className="inner">
-                        <button className="previous">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M16 7l-7 5l7 5zm-7 5V7H7v10h2z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
+                        <button className="play" onClick={() => setCurrentTrack({...currentTrack, playing: true})}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M7 6v12l10-6z" fill="#626262"/></svg>
                         </button>
-                        <button className="next">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M7 7v10l7-5zm9 10V7h-2v10z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
+
+                    ) : (
+
+                        <button className="pause" onClick={() => setCurrentTrack({...currentTrack, playing: false})}>
+                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="#626262"/></svg>      
                         </button>
-                        {!currentTrack.playing ? (
 
-                            <button className="play" onClick={() => setCurrentTrack({...currentTrack, playing: true})}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M7 6v12l10-6z" fill="#626262"/></svg>
-                            </button>
-
-                        ) : (
-
-                            <button className="pause" onClick={() => setCurrentTrack({...currentTrack, playing: false})}>
-                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="#626262"/></svg>      
-                            </button>
-
-                        )}
-                    
-                    </div>
+                    )}
+                
                 </div>
+            </div>
 
-            </animated.div>
+        </animated.div>
 
-        ) 
-    } else {
-        return <div className="hidden"></div>;
-    }
+    ) 
+   
 }
 
 export default Player;

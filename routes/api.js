@@ -45,6 +45,7 @@ router.post('/rss', function(req, res, next) {
         ignoreComment: true,
         alwaysChildren: false,
         compact: true,
+        ignoreCdata: false,
       };
       const rssJson = convert.xml2js(response.data, options);
       console.log(rssJson);

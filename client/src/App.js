@@ -31,23 +31,26 @@ function App() {
   const [selectedChannel, setSelectedChannel] = useState({});
   return (
     <div className="App">
-    <Header />
     <PlayContext.Provider value={{currentTrack, setCurrentTrack}} >
-      <ChannelContext.Provider value={{selectedChannel, setSelectedChannel}}>
-        <Router>
+    <ChannelContext.Provider value={{selectedChannel, setSelectedChannel}}>
+      <Router>
+        <Header />
           <Switch>
             <Route exact path= "/">
-              <Login />
-            </Route>
-            <Route path="/library">
               <Library />
+            </Route>
+            <Route path="/login">
+              <Login />
             </Route>
             <Route path="/channel/:id">
               <Channel />
             </Route>
           </Switch>
         </Router>
-        <Player/>
+        {currentTrack.track ? 
+          <Player/>
+          : null
+        }
       </ChannelContext.Provider>
     </PlayContext.Provider>
     </div>

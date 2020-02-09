@@ -64,13 +64,13 @@ const SearchBar = () => {
 
       
       <div className="results-list">
-          { searchResults.length || !searchTerm.Length ? (
-              <div>
-                  {resultsList}
-              </div>
-          ) : (
-              <p>Sorry, no results</p>
-          )
+          { !searchResults.length && searchTerm.length > 2 ? (
+                <p className="sorry">Sorry, no results</p>
+            ) : (
+                <div>
+                    {resultsList}
+                </div>
+            )
           }
       </div>
     </div>
