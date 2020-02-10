@@ -7,8 +7,10 @@ import Login from './components/Login';
 import Library from './components/Library';
 import Player from './components/Player';
 import Channel from './pages/Channel';
-import ChannelContext from './utils/ChannelContext'
-import PlayContext from './utils/PlayContext'
+import ChannelContext from './utils/ChannelContext';
+import PlayContext from './utils/PlayContext';
+import UserContext from './utils/UserContext';
+import ScrollToTop from './utils/ScrollToTop';
 
 let unlocker;
 function App() {
@@ -20,7 +22,11 @@ function App() {
       
   });
   }, [])
-  
+  const [user, setUser] = useState({
+    username: '',
+    email: '',
+    id: ''
+  });
   const [currentTrack, setCurrentTrack] = useState({
     author: '',
     title: '',
@@ -33,8 +39,10 @@ function App() {
     <div className="App">
     <PlayContext.Provider value={{currentTrack, setCurrentTrack}} >
     <ChannelContext.Provider value={{selectedChannel, setSelectedChannel}}>
+    <UserContext.Provider value={{user, setUser}}>
       <Router>
         <Header />
+        <ScrollToTop/>
           <Switch>
             <Route exact path= "/">
               <Library />
@@ -51,7 +59,8 @@ function App() {
           <Player/>
           : null
         }
-      </ChannelContext.Provider>
+    </UserContext.Provider>
+    </ChannelContext.Provider>
     </PlayContext.Provider>
     </div>
   );

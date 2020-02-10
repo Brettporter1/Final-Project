@@ -1,6 +1,6 @@
 import React, {useEffect, useContext, useState} from 'react';
 import {Howl, Howler} from 'howler';
-import {useSpring, animated} from 'react-spring'
+import {useSpring, animated} from 'react-spring';
 import PlayContext from '../../utils/PlayContext';
 
 

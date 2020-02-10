@@ -79,7 +79,7 @@ input {
 
 header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 20px;
     height: $headerHeight;
@@ -89,9 +89,13 @@ header {
         font-size: 24px;
         letter-spacing: 3px;
         color: $accent;
+        justify-self: center;
     }
     .menu-btn {
         padding: 0;
+        margin-right: auto;
+        width: 65px;
+        display: flex;
         svg {
             height: 35px;
             width: 35px;
@@ -101,12 +105,26 @@ header {
         }
     }
     .sign-in-btn {
+        margin-left: auto;
         color: $accent;
         font-weight: 600;
         font-style: italic;
         border: 1px solid $accent;
         padding: 3px 5px;
         border-radius: 4px;
+        width: 65px;
+        text-align: center;
+    }
+    .user-btn {
+        margin-left: auto;
+        color: $accent;
+        font-weight: 600;
+        font-style: italic;
+        border: 1px solid $accent;
+        padding: 3px 5px;
+        border-radius: 4px;
+        width: 65px;
+        text-align: center;
     }
 }
 
@@ -201,7 +219,6 @@ header {
             max-width: 100%;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 1;
-            overflow: hidden;
         }
         p {
             font-size: 0.875rem;
@@ -214,7 +231,6 @@ header {
             max-width: 100%;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 1;
-            overflow: hidden;
         }
     }
     .sorry {
@@ -379,6 +395,7 @@ header {
             background-color: $accent;
             animation: loading 2s infinite ease-in-out;
             opacity: 0.5;
+            box-shadow: inset 0px -2px 7px -2px transparentize($black, 0.1);
         }
         .circ2 {
             animation-delay: 0.3s;
@@ -492,18 +509,24 @@ header {
         flex-shrink: 0;
         width: 45px;
         height: 45px;
-        background-color: $darkGray;
+        border: 3px solid $darkGray;
         border-radius: 1000px;
         display: flex;
         align-items: center;
         justify-content: center;
         svg {
-            height: 40px;
-            width: 40px;
-            transform: translateX(2px);
+            width: 24px;
+            height: 24px;
+            transform: translateX(2px) scale(1.6);
+            path {
+                fill: $darkGray;
+            }
         }
         &:hover {
-            background-color: $black;
+            background-color: $darkGray;
+            path {
+                fill: $medGray;
+            }
         }
     }
     .pause {
@@ -533,6 +556,56 @@ header {
             z-index: -1;
             background-color: $accent;
             background-color: transparentize($accent, $amount: 0.4);
+        }
+    }
+}
+
+//// PAd Bottoms /////
+
+.library-component {
+    padding-bottom: 100px;
+}
+
+//// Swipe Cards ////
+
+.swipe-cards-container {
+    max-width: 800px;
+    margin: 0px auto;
+    .swiper-container {
+        @media (min-width: 800px) {
+            border-radius: 4px;
+            padding-top: 20px;
+            box-shadow: inset 0px -2px 10px -3px transparentize($black, 0.2),
+                inset 0px -2px 25px 0px transparentize($black, 0.2);
+        }
+    }
+    h2 {
+        margin: 0;
+        padding: 20px;
+        color: $lightGray;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+    .card {
+        padding: 0;
+        img {
+            width: 100%;
+            border-radius: 4px;
+            box-shadow: 0px 5px 10px -3px transparentize($black, 0.5);
+        }
+        h4 {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: -webkit-box;
+            width: 100%;
+            max-width: 100%;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: $light;
+            margin: 0;
+            text-align: left;
         }
     }
 }

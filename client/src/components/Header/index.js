@@ -1,6 +1,35 @@
-import React from 'react'
+import React, {useEffect, useContext} from 'react'
 import {Link} from 'react-router-dom';
+import UserContext from '../../utils/UserContext';
+import Axios from 'axios';
+
+
 const Header = () => {
+    const {user, setUser} = useContext(UserContext);
+    
+    useEffect(() => {
+            Axios.get('/api/check-user', { 
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${localStorage.getItem('jwt')}`
+                }, 
+            })
+            .then((res) => {
+                console.log(res);
+                updateUser(res.data)
+                
+            })
+            .catch((err) => console.log(err))
+
+       
+    }, []);
+    const updateUser = (data) => {
+        setUser({...user, 
+            username: data.name,
+            email: data.email,
+            id: data.id,
+        })
+    }
     return (
         <header>
             <button className='menu-btn'>
@@ -11,9 +40,17 @@ const Header = () => {
                     PODCHAT
                 </h1>
             </Link>
-            <Link to={'/login'} className='sign-in-btn'>
-                Sign In
-            </Link>
+            { user ? (
+                <Link className='user-btn'>
+                    {user.username}
+                </Link>
+                ) : (
+                    <Link to={'/login'} className='sign-in-btn'>
+                        Sign In
+                    </Link>
+                )
+                
+            }
 
         </header>
     )
