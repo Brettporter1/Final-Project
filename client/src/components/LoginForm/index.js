@@ -1,15 +1,17 @@
-import React, {useState} from 'react'
-import {useSpring, animated} from 'react-spring'
-import axios from 'axios'
-
-const handleLogin = () => {
-    
-}
+import React, {useState, useContext} from 'react';
+import {useSpring, animated} from 'react-spring';
+import { withRouter } from "react-router-dom";
+import UserContext from '../../utils/UserContext';
+import axios from 'axios';
 
 
 const LoginForm = (props) => {
 
+    const {user, setUser} = useContext(UserContext);
+    const [error, setError] = useState('');
+    
     const handleRegister = (e) => {
+        
         e.preventDefault();
         axios.post('/api/register', {
             username: info.username,
@@ -19,23 +21,29 @@ const LoginForm = (props) => {
         })
         .then(res => {
             console.log(res);
+            props.history.push('/');
+            
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err.response.data.errors[0].msg);
+            setError(err.response.data.errors[0].msg);
+        });
+
     
     }
     const handleLogin = (e) => {
         e.preventDefault();
         axios.post('/api/login', {
-            // username: info.username,
             email: info.email,
             password: info.password,
-            // confirmPassword: info.confirmPassword,
         })
         .then(res => {
             console.log(res);
             localStorage.setItem('jwt', res.data.token);
+            user.checkUser();
+            props.history.push('/');
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err.response.data));
     
     }
 
@@ -50,6 +58,7 @@ const LoginForm = (props) => {
         
             props.intent === 'register' ? (
                 <animated.form style={transition} action="#" className='login-form' onSubmit={(e) => handleRegister(e)}>
+                    <p className="error">{error}</p>
                     <input type="text" onChange={(e) => setInfo({...info, username: e.target.value })} placeholder="USERNAME" required/>
                     <input type="text" onChange={(e) => setInfo({...info, email: e.target.value })} placeholder="EMAIL" required/>
                     <input type="password" onChange={(e) => setInfo({...info, password: e.target.value })} placeholder="PASSWORD" required/>
@@ -58,6 +67,7 @@ const LoginForm = (props) => {
                 </animated.form>
             ) : (
                 <animated.form style={transition} action="#" className='login-form' onSubmit={(e) => handleLogin(e)}>
+                    <p className="error">{error}</p>
                     <input type="text" onChange={(e) => setInfo({...info, email: e.target.value })} placeholder="EMAIL" required/>
                     <input type="password" onChange={(e) => setInfo({...info, password: e.target.value })} placeholder="PASSWORD" required/>
                     <button type="submit" className=" btn big outline">Sign In</button>
@@ -69,4 +79,4 @@ const LoginForm = (props) => {
     )
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);

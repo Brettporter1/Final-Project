@@ -42,7 +42,7 @@ const Player = () => {
         if (currentTrack.playing === true && track) {
             progressInterval = setInterval(() => {
                 const progress = (track.seek() / track.duration() ) * 100;
-                console.log(track.seek());
+                
                 setProgress(progress)
             }, 500);
             track.play();
@@ -66,7 +66,7 @@ const Player = () => {
               if (node.buffered.start(node.buffered.length - 1 - i) < node.currentTime) {
                 const bufferProgress = (node.buffered.end(node.buffered.length - 1 - i) / duration) * 100;
                 // do what you will with it. I.E - store.set({ bufferProgress });
-                console.log(bufferProgress);
+                
                 setLoading(bufferProgress);
                 break;
               }
@@ -76,9 +76,6 @@ const Player = () => {
     }   
     const seek = (e) => {
         const percent = (e.clientX / window.innerWidth);
-        console.log(window.innerWidth);
-        console.log(e.clientX);
-        console.log(percent);
         if (track) {
             track.seek(track.duration() * percent);
         }

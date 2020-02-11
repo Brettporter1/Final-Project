@@ -8,6 +8,8 @@ require('dotenv').config({ path: 'PORT' });
 const connectDb = () =>
   mongoose.connect(process.env.DATABASE_URL.concat('/podchat'), {
     useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
   });
 const models = { User, Podcast, Comment };
 

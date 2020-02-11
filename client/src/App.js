@@ -1,6 +1,7 @@
 import React, {useState, createContext, useEffect} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import {Howl, Howler} from 'howler';
+import Axios from 'axios';
 import './App.scss';
 import Header from './components/Header';
 import Login from './components/Login';
@@ -22,10 +23,28 @@ function App() {
       
   });
   }, [])
+  const checkUser = () => {
+    if (user.id === '') {
+      Axios.get('/api/check-user', { 
+          headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${localStorage.getItem('jwt')}`
+          }, 
+      })
+      .then((res) => {
+          console.log(res);
+          updateUser(res.data)
+          
+      })
+      .catch((err) => console.log(err))
+
+    }
+  }
   const [user, setUser] = useState({
     username: '',
     email: '',
-    id: ''
+    id: '',
+    checkUser: (() => checkUser()),
   });
   const [currentTrack, setCurrentTrack] = useState({
     author: '',
@@ -34,6 +53,14 @@ function App() {
     playing: false,
     progress : 0
   });
+  const updateUser = (data) => {
+    setUser({...user, 
+        username: data.name,
+        email: data.email,
+        id: data.id,
+    })
+  }
+  
   const [selectedChannel, setSelectedChannel] = useState({});
   return (
     <div className="App">

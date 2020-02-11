@@ -8,28 +8,12 @@ const Header = () => {
     const {user, setUser} = useContext(UserContext);
     
     useEffect(() => {
-            Axios.get('/api/check-user', { 
-                headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${localStorage.getItem('jwt')}`
-                }, 
-            })
-            .then((res) => {
-                console.log(res);
-                updateUser(res.data)
-                
-            })
-            .catch((err) => console.log(err))
+      
+        user.checkUser();
 
        
     }, []);
-    const updateUser = (data) => {
-        setUser({...user, 
-            username: data.name,
-            email: data.email,
-            id: data.id,
-        })
-    }
+    
     return (
         <header>
             <button className='menu-btn'>
@@ -40,7 +24,7 @@ const Header = () => {
                     PODCHAT
                 </h1>
             </Link>
-            { user ? (
+            { user.id !== '' ? (
                 <Link className='user-btn'>
                     {user.username}
                 </Link>

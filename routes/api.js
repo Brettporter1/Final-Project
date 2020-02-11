@@ -4,6 +4,7 @@ const convert = require('xml-js');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { check, validationResult } = require('express-validator/check');
 const User = require('../models/user');
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router.get('/', function(req, res, next) {
   // });
   res.json('respond with a resource');
 });
+
 router.get(
   '/check-user',
   passport.authenticate('jwt', { session: false }),
@@ -28,6 +30,22 @@ router.get(
   }
 );
 
+router.get('/channel/:id', function(req, res, next) {
+  const { id } = req.params;
+  let podcasts;
+  console.log(id);
+  axios
+    .get(`https://itunes.apple.com/lookup?id=${id}`)
+    .then(response => {
+      // console.log(response);
+      podcasts = response.data;
+      console.log(podcasts);
+      res.json(podcasts.results[0]);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 router.get('/searchpodcasts/:term', function(req, res, next) {
   const { term } = req.params;
   let podcasts;
@@ -66,31 +84,45 @@ router.post('/rss', function(req, res, next) {
     });
 });
 
-router.post('/register', function(req, res, next) {
-  User.findOne({ email: req.body.email }).then(user => {
-    if (user) {
-      const error = 'Email  Exists in Database.';
-      return res.status(400).json(error);
+router.post(
+  '/register',
+  [
+    check('username', 'User name is required')
+      .not()
+      .isEmpty(),
+    check('email', 'Please enter valid email address').isEmail(),
+    check(
+      'password',
+      'Please enter a password with at least 6 characters'
+    ).isLength({ min: 6 }),
+  ],
+  (req, res, next) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-    const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-    });
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) throw err;
-      bcrypt.hash(newUser.password, salt, (err, hash) => {
+    const { email, username, password } = req.body;
+    User.findOne({ email }).then(user => {
+      if (user) {
+        errors = { msg: 'Email  Exists in Database.' };
+        return res.status(400).json({ errors: [errors] });
+      }
+      const newUser = new User({ username, email, password });
+      bcrypt.genSalt(10, (err, salt) => {
         if (err) throw err;
-        newUser.password = hash;
-        newUser
-          .save()
-          .then(user => res.json(user))
-          .catch(err => res.status(400).json(err));
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
+          if (err) throw err;
+          newUser.password = hash;
+          newUser
+            .save()
+            .then(user => res.json(user))
+            .catch(err => res.status(400).json(err));
+        });
       });
     });
-  });
-  console.log('user created');
-});
+    console.log('user created');
+  }
+);
 
 router.post('/login', function(req, res, next) {
   const { email } = req.body;

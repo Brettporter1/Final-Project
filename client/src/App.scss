@@ -160,6 +160,17 @@ header {
         justify-content: center;
         width: 100%;
     }
+    .error {
+        background-color: $accent;
+        color: $darkGray;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-style: italic;
+        font-size: 0.8rem;
+        max-width: 600px;
+    }
 }
 
 // SEARCH //
@@ -175,6 +186,13 @@ header {
         width: 100%;
         display: flex;
         justify-content: center;
+
+        input {
+            background-image: url("/svg/search.svg");
+            background-size: auto 100%;
+            background-repeat: no-repeat;
+            background-position: 100% center;
+        }
     }
     li {
         color: $light;

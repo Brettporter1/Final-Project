@@ -3,6 +3,7 @@ import ChannelContext from '../../utils/ChannelContext'
 import PlayContext from '../../utils/PlayContext'
 import axios from 'axios';
 import moment from 'moment';
+import {useParams} from 'react-router-dom';
 import {useTrail, useSpring, animated} from 'react-spring';
 
 const Channel = () => {
@@ -12,16 +13,35 @@ const Channel = () => {
     const [loading, setLoading] = useState(false);
     const transition = useSpring({to: {opacity: 1, transform: 'translateY(0px)'}, from: {opacity: 0, transform: 'translateY(100px)'}});
     const trail = useTrail(tracks.length, {opacity: 1, transform: 'translateY(0px)', from:{ opacity: 0, transform: 'translateY(100px)'}})
-    useEffect(() => {
-        setLoading(true);
+    const {id} = useParams();
+
+    const getRss = (feed) => {
+        console.log(selectedChannel);
         axios.post('/api/rss', {
-            url: selectedChannel.feedUrl
+            url: feed
         })
         .then(res => {
             console.log(res.data);
             setTracks(res.data);
             setLoading(false)
         })
+    }
+
+    useEffect(() => {
+        setLoading(true);
+        console.log(selectedChannel);
+        if (!selectedChannel.id) {
+            console.log(`id:${id}`);
+            axios.get(`/api/channel/${id}`).then(res => {
+                console.log(res.data);
+                setSelectedChannel(res.data);
+                getRss(res.data.feedUrl);
+            })
+            
+        } else {
+            getRss();
+        }
+        
         
     }, []);
    

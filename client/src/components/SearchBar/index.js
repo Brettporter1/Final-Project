@@ -57,6 +57,7 @@ const SearchBar = () => {
     <div className="search-component">
       <animated.form style={transition} action="#" onSubmit={(e) => e.preventDefault()}>
         <DebounceInput
+            placeholder='Search for Podcasts'
             minLength={1}
             debounceTimeout={300}
             type="text" 
