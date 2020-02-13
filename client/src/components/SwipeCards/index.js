@@ -14,7 +14,7 @@ const SwipeCards = (props) => {
 
     }
     const featuredPodcasts = props.collection.map((podcast, i) => (
-        <button onClick={() => handleSelect(podcast)} className="card">
+        <button onClick={() => handleSelect(podcast)} className="card" key={i}>
             <img src={podcast.artworkUrl600} alt={podcast.artistName}/>
             <h4>{podcast.collectionName}</h4>
         </button>

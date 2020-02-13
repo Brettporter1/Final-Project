@@ -1,6 +1,6 @@
 import React from 'react'
-import SearchBar from '../SearchBar'
-import SwipeCards from '../SwipeCards'
+import SearchBar from '../../components/SearchBar'
+import SwipeCards from '../../components/SwipeCards'
 import Featured from '../../testData/podcasts.json';
 
 

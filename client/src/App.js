@@ -5,9 +5,10 @@ import Axios from 'axios';
 import './App.scss';
 import Header from './components/Header';
 import Login from './components/Login';
-import Library from './components/Library';
+import Library from './pages/Library';
 import Player from './components/Player';
 import Channel from './pages/Channel';
+import Track from './pages/Track'
 import ChannelContext from './utils/ChannelContext';
 import PlayContext from './utils/PlayContext';
 import UserContext from './utils/UserContext';
@@ -79,6 +80,9 @@ function App() {
             </Route>
             <Route path="/channel/:id">
               <Channel />
+            </Route>
+            <Route path="/track/:guid">
+              <Track />
             </Route>
           </Switch>
         </Router>

@@ -324,6 +324,7 @@ header {
         max-width: 600px;
         margin: 0 auto;
         .track-card {
+            position: relative;
             width: calc(100% - 40px);
             background-color: $medGray;
             margin: 10px 20px;
@@ -333,6 +334,14 @@ header {
             text-align: left;
             padding: 20px;
             padding-bottom: 15px;
+            .track-card-link {
+                position: absolute;
+                display: block;
+                height: 100%;
+                width: 100%;
+                left: 0;
+                top: 0;
+            }
             h3 {
                 margin: 0;
                 color: $light;
@@ -458,14 +467,15 @@ header {
         padding: 10px 20px;
         padding-right: 0;
         p {
-            color: $lightGray;
-            font-size: 0.8rem;
+            color: $black;
+            font-size: 0.7rem;
             margin: 0;
             text-overflow: ellipsis;
             overflow: hidden;
             display: -webkit-box;
             width: 100%;
             max-width: 100%;
+            font-weight: 600;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 1;
         }
