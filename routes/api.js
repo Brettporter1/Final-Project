@@ -10,6 +10,7 @@ const User = require('../models/user');
 const Comment = require('../models/comment');
 const Podcast = require('../models/podcasts');
 const Channel = require('../models/channels');
+const Vote = require('../models/votes');
 
 const { ObjectId } = mongoose.Types;
 const router = express.Router();
@@ -74,10 +75,16 @@ router.get('/posts/:track', (req, res, next) => {
   })
     .populate({
       path: 'comments',
-      populate: {
-        path: 'user',
-        model: 'User',
-      },
+      populate: [
+        {
+          path: 'user',
+          model: 'User',
+        },
+        {
+          path: 'votes',
+          model: 'Vote',
+        },
+      ],
     })
 
     .exec((err, result) => {
@@ -218,7 +225,42 @@ router.post(
     makeComment(track);
   }
 );
-
+router.post(
+  '/vote',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    let type = null;
+    Vote.findOne({ user: req.user.id, target: req.body.target }, (err, obj) => {
+      if (obj) {
+        // eslint-disable-next-line prefer-destructuring
+        type = obj.type;
+        Vote.deleteOne({ _id: obj._id }, (err, obj) => {
+          if (err) console.log(err);
+        });
+      }
+      if (type !== req.body.type) {
+        const NewVote = new Vote({
+          user: ObjectId(req.user.id),
+          target: req.body.target,
+          type: req.body.type,
+        });
+        NewVote.save((err, vote) => {
+          if (err) {
+            res.json(err);
+          } else {
+            Comment.findById(req.body.target, (error, comment) => {
+              comment.votes.push(vote);
+              comment.save();
+              res.json(comment);
+            });
+          }
+        });
+      } else {
+        res.json('deleted vote');
+      }
+    });
+  }
+);
 router.post(
   '/register',
   [

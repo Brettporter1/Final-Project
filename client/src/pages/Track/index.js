@@ -16,6 +16,7 @@ const Track = () => {
         comment: '',
         commenting: false,
     });
+    const [votedCount, setVotedCount] = useState(0);
 
     useEffect(() => {
         
@@ -48,7 +49,7 @@ const Track = () => {
        
 
       
-    }, [comment.commenting])
+    }, [comment.commenting, votedCount])
         const makeComment = (e) => {
             e.preventDefault();
             if (track.guid) {
@@ -71,7 +72,26 @@ const Track = () => {
                 })
             }
         };
-
+        const handleVote = (comment, type ) => {
+            Axios.post(
+                '/api/vote', {
+                 target: comment, 
+                 type: type,
+                },
+                 {
+                     headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${localStorage.getItem('jwt')}`
+                        }, 
+                 }
+            )
+            .then(res => {
+                console.log(res.data);
+                setVotedCount(votedCount + 1);
+            })
+        };
+    
+        
     return (
         <div className="track-component">
             <TrackHeader 
@@ -83,7 +103,7 @@ const Track = () => {
             <div className="add-comment">
                 <button onClick={() => {setComment({...comment, commenting: true})}} className="btn outline">Add a Comment</button>
             </div>
-            <Posts posts={track.posts ? track.posts : []}/>
+            <Posts handleVote={handleVote} posts={track.posts ? track.posts : []}/>
             {comment.commenting ? (
                 <form action="#" className="comment-form">
                     <div className="header">

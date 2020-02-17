@@ -787,6 +787,11 @@ header {
                     transform: rotate(180deg);
                 }
             }
+            &.active {
+                svg path {
+                    fill: $accent;
+                }
+            }
         }
     }
     .right {
