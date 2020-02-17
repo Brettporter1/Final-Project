@@ -1,30 +1,44 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
+const commentSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    podcast: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Podcast',
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+    isOfComment: {
+      type: Boolean,
+      default: false,
+    },
+    mainCommentId: {
+      type: String,
+      default: null,
+    },
+    votes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Vote',
+      },
+    ],
   },
-  podcastId: {
-    type: String,
-    required: true,
-  },
-  message: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  isOfComment: {
-    type: Boolean,
-    default: false,
-  },
-  mainCommentId: {
-    type: String,
-  },
-});
+  {
+    toJSON: {
+      virtuals: true,
+    },
+  }
+);
 
 const Comment = mongoose.model('Comment', commentSchema);
 

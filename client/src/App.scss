@@ -21,7 +21,7 @@ html {
 
 body {
     background-color: $darkGray;
-    overflow-x: hidden;
+    // overflow-x: hidden;
     min-height: 100vh;
 }
 button {
@@ -73,6 +73,7 @@ input {
     }
     &.fill-gray {
         background-color: $medGray;
+        color: $black;
     }
 }
 //////////// HEADER ///////////////
@@ -635,5 +636,184 @@ header {
             margin: 0;
             text-align: left;
         }
+    }
+}
+
+/// Track Header /////
+
+.track-header {
+    text-align: center;
+    padding: 30px;
+    max-width: 600px;
+    margin: 0px auto;
+
+    h1 {
+        color: $light;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+    h3 {
+        color: $lightGray;
+        font-weight: 400;
+        font-size: 1rem;
+    }
+    .progress {
+        height: 3px;
+        border-radius: 1000px;
+        background-color: $lightGray;
+    }
+    .details {
+        display: flex;
+        color: $lightGray;
+        padding: 5px;
+        justify-content: space-between;
+    }
+}
+
+/// Posts ///
+
+.add-comment {
+    display: flex;
+    padding: 5px 20px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+    max-width: 950px;
+    margin: 0px auto;
+    button {
+        padding: 10px 10px;
+        margin-left: auto;
+        background-color: $darkGray;
+    }
+}
+.comment-form {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    min-height: 100%;
+    z-index: 200;
+    .header {
+        background-color: $darkGray;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.171);
+        padding: 20px;
+
+        p {
+            margin: 0;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: -webkit-box;
+            width: 100%;
+            max-width: 100%;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            color: $accent;
+            span {
+                color: $lightGray;
+            }
+        }
+    }
+    textarea {
+        position: absolute;
+        // top: 0;
+        left: 0;
+        font-size: 16px;
+        width: 100vw;
+        padding: 20px;
+        height: 100%;
+        background: $black;
+        color: $lightGray;
+        border: 0;
+    }
+    .actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background-color: $darkGray;
+        display: flex;
+        justify-content: flex-end;
+
+        button {
+            padding: 10px;
+            margin-left: 20px;
+        }
+    }
+}
+.posts-component {
+    padding: 20px;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.post-card {
+    padding: 10px;
+    background-color: $medGray;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.171);
+    display: flex;
+    flex-wrap: nowrap;
+    padding-left: 5px;
+    .left {
+        width: 55px;
+        flex-shrink: 0;
+        .vote {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+        }
+        .score {
+            color: $darkGray;
+            line-height: 1.3;
+            margin: 5px 0;
+            font-size: 0.8rem;
+        }
+        button {
+            padding: 0;
+            svg {
+                height: 36px;
+                width: 36px;
+                path {
+                    fill: $darkGray;
+                }
+            }
+            &.down {
+                svg {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+    }
+    .right {
+        flex-basis: 100%;
+        .action {
+            display: flex;
+            flex-wrap: nowrap;
+            .to-thread {
+                margin-left: auto;
+                svg {
+                    transform: rotate(180deg);
+                    path {
+                        fill: $accent;
+                    }
+                }
+            }
+        }
+    }
+    h3 {
+        color: $light;
+        font-weight: 600;
+        margin: 0;
+    }
+    .comment-body * {
+        color: $lightGray;
+    }
+    .comment-body a {
+        color: $accent;
     }
 }

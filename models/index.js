@@ -6,7 +6,7 @@ const Comment = require('./comment');
 require('dotenv').config({ path: 'PORT' });
 
 const connectDb = () =>
-  mongoose.connect(process.env.DATABASE_URL.concat('/podchat'), {
+  mongoose.connect(process.env.ATLAS_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,

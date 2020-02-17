@@ -21,10 +21,13 @@ const LoginForm = (props) => {
         })
         .then(res => {
             console.log(res);
+            localStorage.setItem('jwt', res.data.token);
+            user.checkUser();
             props.history.push('/');
             
         })
         .catch(err => {
+            console.log(err);
             console.log(err.response.data.errors[0].msg);
             setError(err.response.data.errors[0].msg);
         });

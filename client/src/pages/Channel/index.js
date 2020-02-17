@@ -55,7 +55,7 @@ const Channel = () => {
                 <h3>{(tracks[i].title.hasOwnProperty('_text') ? tracks[i].title._text : tracks[i].title._cdata)}</h3>
                 <div className="details">
                     <span className="duration">Duration: {tracks[i]['itunes:duration'] ? tracks[i]['itunes:duration']['_text'] : null}</span>
-                    <span className="comments">0 Comments</span>
+                    <span className="comments">{tracks[i].comment_count || 0} Comments</span>
                 </div>
                 <div className="controls">
                     <div className="progress"></div>

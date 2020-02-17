@@ -5,8 +5,13 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator/check');
+const mongoose = require('mongoose');
 const User = require('../models/user');
+const Comment = require('../models/comment');
+const Podcast = require('../models/podcasts');
+const Channel = require('../models/channels');
 
+const { ObjectId } = mongoose.Types;
 const router = express.Router();
 
 require('dotenv').config();
@@ -62,27 +67,157 @@ router.get('/searchpodcasts/:term', function(req, res, next) {
       console.log(err);
     });
 });
+router.get('/posts/:track', (req, res, next) => {
+  console.log(req.params.track.replace(/~/g, '/').replace(/_/, '?'));
+  Podcast.findOne({
+    'data.guid._text': req.params.track.replace(/~/g, '/').replace(/_/, '?'),
+  })
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'user',
+        model: 'User',
+      },
+    })
+
+    .exec((err, result) => {
+      if (err) console.log(err);
+      res.json(result);
+    });
+  // .catch(error => res.json(error));
+});
 router.post('/rss', function(req, res, next) {
   const { url } = req.body;
   console.log(url);
   axios
     .get(url)
-    .then(response => {
+    .then(async response => {
       // console.log(response);
+
       const options = {
         ignoreComment: true,
         alwaysChildren: false,
         compact: true,
         ignoreCdata: false,
       };
-      const rssJson = convert.xml2js(response.data, options);
-      console.log(rssJson);
-      res.json(rssJson.rss.channel.item);
+      const rssJson = convert.xml2js(response.data, options).rss.channel.item;
+      rssJson.forEach(track => {
+        if (track.guid._cdata) {
+          track.guid._text = track.guid._cdata;
+        }
+      });
+      console.log('rssJson');
+      // console.log(rssJson);
+      if (rssJson.length) {
+        rssJson.forEach((track, i) => {
+          Podcast.findOne(
+            { 'data.guid._text': track.guid._text },
+            (err, obj) => {
+              if (obj) {
+                track.comment_count = obj.comments.length;
+              }
+              if (i === rssJson.length - 1) {
+                res.json(rssJson);
+              }
+            }
+          );
+        });
+      } else {
+        console.log(rssJson);
+        res.json(rssJson);
+      }
     })
     .catch(err => {
       console.log(err);
     });
 });
+
+// Create comment and associate to podcast track
+router.post(
+  '/make-comment',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    const getChannel = () =>
+      new Promise(resolve => {
+        Channel.findOne(
+          { 'data.channelId': req.body.channel.channelId },
+          (err, thisChannel) => {
+            console.log('getting channel...');
+            console.log(thisChannel);
+            if (!thisChannel) {
+              console.log('making new channel record');
+              const NewChannel = new Channel({ data: req.body.channel });
+              NewChannel.save((err, thisNewChannel) => {
+                if (err) {
+                  res.json(err);
+                }
+                console.log(thisNewChannel);
+                resolve(thisNewChannel);
+              });
+            } else {
+              resolve(thisChannel);
+            }
+          }
+        );
+      });
+
+    const getTrack = chnl =>
+      new Promise(resolve => {
+        Podcast.findOne(
+          { 'data.guid._text': req.body.podcast.guid._text },
+          (err, foundTrack) => {
+            if (err) {
+              res.json(err);
+            }
+            if (!foundTrack) {
+              console.log('track not found');
+              const NewPodcast = new Podcast({
+                data: req.body.podcast,
+                channel: chnl._id,
+              });
+              NewPodcast.save((err, newTrack) => {
+                if (err) {
+                  res.json(err);
+                }
+                resolve(newTrack);
+              });
+            } else {
+              resolve(foundTrack);
+            }
+          }
+        );
+      });
+
+    const makeComment = trk => {
+      const NewComment = new Comment({
+        user: ObjectId(req.user.id),
+        message: req.body.message,
+        podcast: track._id,
+      });
+
+      NewComment.podcast = ObjectId(trk._id);
+      NewComment.save((err, comment) => {
+        if (err) {
+          res.json(err);
+        } else {
+          Podcast.findById(comment.podcast, (error, podcast) => {
+            podcast.comments.push(comment);
+            podcast.save();
+            res.json(comment);
+          });
+        }
+      });
+    };
+
+    const channel = await getChannel();
+    console.log('got channel');
+    console.log(channel._id);
+    const track = await getTrack(channel);
+    console.log('got track');
+    console.log(track._id);
+    makeComment(track);
+  }
+);
 
 router.post(
   '/register',
@@ -113,10 +248,24 @@ router.post(
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           if (err) throw err;
           newUser.password = hash;
-          newUser
-            .save()
-            .then(user => res.json(user))
-            .catch(err => res.status(400).json(err));
+          console.log(newUser);
+          newUser.save((err, data) => {
+            console.log(newUser);
+            const payload = {
+              id: newUser._id,
+              name: newUser.userName,
+            };
+            jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
+              if (err)
+                res
+                  .status(500)
+                  .json({ error: 'Error signing token', raw: err });
+              res.json({
+                success: true,
+                token: `Bearer ${token}`,
+              });
+            });
+          });
         });
       });
     });
