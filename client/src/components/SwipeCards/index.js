@@ -24,7 +24,9 @@ const SwipeCards = (props) => {
         spaceBetween: 10,
         slidesOffsetBefore: 20,
         freeMode: true,
-        freeModeMomentumRatio: 0.7,
+        freeModeMomentumRatio: .7,
+        mousewheel: true,
+        
         breakpoints: {
             700: {
                 slidesPerView: 4.5,
