@@ -1,6 +1,6 @@
-import React, {useState, createContext, useEffect} from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import {Howl, Howler} from 'howler';
+import { Howl, Howler } from 'howler';
 import Axios from 'axios';
 import './App.scss';
 import Header from './components/Header';
@@ -8,7 +8,7 @@ import Login from './components/Login';
 import Library from './pages/Library';
 import Player from './components/Player';
 import Channel from './pages/Channel';
-import Track from './pages/Track'
+import Track from './pages/Track';
 import ChannelContext from './utils/ChannelContext';
 import PlayContext from './utils/PlayContext';
 import UserContext from './utils/UserContext';
@@ -20,79 +20,71 @@ function App() {
     unlocker = new Howl({
       src: ['/audio/silence.mp3'],
       preload: false,
-      html5: true,
-      
-  });
-  }, [])
+      html5: true
+    });
+  }, []);
   const checkUser = () => {
     if (user.id === '') {
-      Axios.get('/api/check-user', { 
-          headers: {
+      Axios.get('/api/check-user', {
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `${localStorage.getItem('jwt')}`
-          }, 
+          Authorization: `${localStorage.getItem('jwt')}`
+        }
       })
-      .then((res) => {
+        .then(res => {
           console.log(res);
-          updateUser(res.data)
-          
-      })
-      .catch((err) => console.log(err))
-
+          updateUser(res.data);
+        })
+        .catch(err => console.log(err));
     }
-  }
+  };
   const [user, setUser] = useState({
     username: '',
     email: '',
     id: '',
-    checkUser: (() => checkUser()),
+    checkUser: () => checkUser()
   });
   const [currentTrack, setCurrentTrack] = useState({
     author: '',
     title: '',
     track: '',
     playing: false,
-    progress : 0
+    progress: 0
   });
-  const updateUser = (data) => {
-    setUser({...user, 
-        username: data.name,
-        email: data.email,
-        id: data.id,
-    })
-  }
-  
+  const updateUser = data => {
+    setUser({ ...user, username: data.name, email: data.email, id: data.id });
+  };
+
   const [selectedChannel, setSelectedChannel] = useState({});
   return (
-    <div className="App">
-    <PlayContext.Provider value={{currentTrack, setCurrentTrack}} >
-    <ChannelContext.Provider value={{selectedChannel, setSelectedChannel}}>
-    <UserContext.Provider value={{user, setUser}}>
-      <Router>
-        <Header />
-        <ScrollToTop/>
-          <Switch>
-            <Route exact path= "/">
-              <Library />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/channel/:id">
-              <Channel />
-            </Route>
-            <Route path="/track/:guid">
-              <Track />
-            </Route>
-          </Switch>
-        </Router>
-        {currentTrack.track ? 
-          <Player/>
-          : null
-        }
-    </UserContext.Provider>
-    </ChannelContext.Provider>
-    </PlayContext.Provider>
+    <div className='App'>
+      <PlayContext.Provider value={{ currentTrack, setCurrentTrack }}>
+        <ChannelContext.Provider
+          value={{ selectedChannel, setSelectedChannel }}
+        >
+          <UserContext.Provider value={{ user, setUser }}>
+            <Router>
+              <Header />
+              <ScrollToTop />
+              <Switch>
+                <Route exact path='/'>
+                  <Library />
+                </Route>
+                <Route path='/login'>
+                  <Login />
+                </Route>
+                <Route path='/channel/:id'>
+                  <Channel />
+                </Route>
+                <Route path='/track/:guid'>
+                  <Track />
+                </Route>
+              </Switch>
+            </Router>
+            {currentTrack.track ? <Player /> : null}
+          </UserContext.Provider>
+        </ChannelContext.Provider>
+      </PlayContext.Provider>
     </div>
   );
 }
