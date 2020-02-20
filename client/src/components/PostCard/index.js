@@ -1,4 +1,5 @@
 import React, {useMemo, useContext} from 'react';
+import {Link} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import UserContext from '../../utils/UserContext'
 
@@ -39,9 +40,9 @@ const PostCard = (props) => {
                 </div>
                 <ReactMarkdown className="comment-body" source={props.message}/>
                 <div className="action">
-                    <button className="to-thread">
+                    <Link to={`/thread/${props.id}`} className="to-thread">
                         <svg xmlns="http://www.w3.org/2000/svg"  width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M21 11H6.414l5.293-5.293l-1.414-1.414L2.586 12l7.707 7.707l1.414-1.414L6.414 13H21z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
-                    </button>
+                    </Link>
                 </div>
 
             </div>

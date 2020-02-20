@@ -9,6 +9,7 @@ import Library from './pages/Library';
 import Player from './components/Player';
 import Channel from './pages/Channel';
 import Track from './pages/Track'
+import Thread from './pages/Thread';
 import ChannelContext from './utils/ChannelContext';
 import PlayContext from './utils/PlayContext';
 import UserContext from './utils/UserContext';
@@ -83,6 +84,9 @@ function App() {
             </Route>
             <Route path="/track/:guid">
               <Track />
+            </Route>
+            <Route path="/thread/:id">
+              <Thread/>
             </Route>
           </Switch>
         </Router>

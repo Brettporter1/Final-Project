@@ -1,9 +1,13 @@
 import React from 'react';
-
+import ThreadHeader from '../../components/ThreadHeader';
+import PostCard from '../../components/PostCard';
 const Thread = () => {
-    <div className="thread-component">
-        
-    </div>
+    return (
+        <div className="thread-component">
+            <ThreadHeader />
+
+        </div>
+    )
 }
 
 export default Thread;
