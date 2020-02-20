@@ -1,9 +1,10 @@
-import React from 'react'
+import React from 'react';
 
 const UserContext = React.createContext({
-    username: '',
-    email: '',
-    id: ''
+  username: '',
+  email: '',
+  photo: '',
+  id: ''
 });
 
 export default UserContext;
