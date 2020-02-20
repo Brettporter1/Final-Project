@@ -1,20 +1,82 @@
-import React from 'react'
+import React, { useEffect, useContext, useState, Fragment } from 'react';
+import { Link } from 'react-router-dom';
+import UserContext from '../../utils/UserContext';
+import DropMenu from '../DropMenu';
+import Backdrop from '../BackDrop';
+import { gsap } from 'gsap';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+
+gsap.registerPlugin(MorphSVGPlugin);
 
 const Header = () => {
-    return (
-        <header>
-            <button className='menu-btn'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M4 11h12v2H4zm0-5h16v2H4zm0 12h7.235v-2H4z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
-            </button>
-            <h1>
-                PODCHAT
-            </h1>
-            <button className='sign-in-btn'>
-                Sign In
-            </button>
+  const { user, setUser } = useContext(UserContext);
+  const [openMenu, setOpenMenu] = useState(false);
 
-        </header>
-    )
-}
+  const handleMenu = () => {
+    setOpenMenu(state => !state);
+    if (!openMenu) {
+      gsap.to('#start', 2, {
+        rotation: 360,
+        transformOrigin: '7px 7px',
+        morphSVG: '#end'
+      });
+    } else {
+      gsap.to('#start', 2, {
+        rotation: -360,
+        transformOrigin: '7px 7px',
+        morphSVG: '#start'
+      });
+    }
+  };
+
+  useEffect(() => {
+    user.checkUser();
+  }, []);
+
+  return (
+    <Fragment>
+      {openMenu ? <Backdrop onClick={() => handleMenu()} /> : null}
+      {openMenu && <DropMenu />}
+      <header>
+        <button className='menu-btn' onClick={() => handleMenu()}>
+          <svg
+            version='1.1'
+            xmlns='http://www.w3.org/2000/svg'
+            x='0px'
+            y='0px'
+            viewBox='0 0 24 24'
+          >
+            <g>
+              <polygon
+                id='end'
+                class='st0'
+                points='18.6,6.8 17.1,5.3 12,10.5 6.8,5.3 5.3,6.8 10.5,11.9 5.3,17.1 6.8,18.6 12,13.4 17.1,18.6 18.6,17.1 
+		13.4,11.9 	'
+              />
+            </g>
+            <g>
+              <path
+                id='start'
+                class='st0'
+                d='M3.2,11h13v2.2h-13V11z M3.2,5.5h17.4v2.2H3.2V5.5z M3.2,18.6h7.9v-2.2H3.2V18.6z'
+              />
+            </g>
+          </svg>
+        </button>
+
+        <Link to={'/'}>
+          <h1>PODCHAT</h1>
+        </Link>
+        {user.id !== '' ? (
+          <Link className='user-btn'>{user.username}</Link>
+        ) : (
+          <Link to={'/login'} className='sign-in-btn'>
+            Sign In
+          </Link>
+        )}
+      </header>
+    </Fragment>
+  );
+};
 
 export default Header;

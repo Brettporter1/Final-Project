@@ -1,10 +1,12 @@
 import React, {useEffect, useState, useContext} from 'react'
 import {DebounceInput} from 'react-debounce-input';
 import {Link} from 'react-router-dom';
+import {useSpring, animated} from 'react-spring';
 import ChannelContext from '../../utils/ChannelContext'
 
 
 const SearchBar = () => {
+    const transition = useSpring({to: {opacity: 1, transform: 'translateY(0px)'}, from: {opacity: 0, transform: 'translateY(100px)'}});
     const {selectedChannel, setSelectedChannel} = useContext(ChannelContext);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -53,24 +55,26 @@ const SearchBar = () => {
   return(
 
     <div className="search-component">
-      <form action="#" onSubmit={(e) => e.preventDefault()}>
+      <animated.form style={transition} action="#" onSubmit={(e) => e.preventDefault()}>
         <DebounceInput
+            placeholder='Search for Podcasts'
             minLength={1}
             debounceTimeout={300}
             type="text" 
             value={searchTerm} 
             onChange={(e) => setSearchTerm(e.target.value)}/>
-      </form>
+      </animated.form>
 
       
       <div className="results-list">
-          { searchResults.length || !searchTerm.Length ? (
-              <div>
-                  {resultsList}
-              </div>
-          ) : (
-              <p>Sorry, no results</p>
-          )
+          { !searchResults.length && searchTerm.length > 2 ? (
+                <p className="sorry">Sorry, no results</p>
+            ) : !searchTerm.length ? null 
+            : (
+                <div>
+                    {resultsList}
+                </div>
+            )
           }
       </div>
     </div>
