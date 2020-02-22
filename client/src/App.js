@@ -1,5 +1,6 @@
 import React, { useState, createContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import {Image} from 'cloudinary-react';
 import { Howl, Howler } from 'howler';
 import Axios from 'axios';
 import './App.scss';
