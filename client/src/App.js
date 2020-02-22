@@ -10,6 +10,7 @@ import Library from './pages/Library';
 import Player from './components/Player';
 import Channel from './pages/Channel';
 import Track from './pages/Track';
+import Profile from './components/Profile';
 import ChannelContext from './utils/ChannelContext';
 import PlayContext from './utils/PlayContext';
 import UserContext from './utils/UserContext';
@@ -73,6 +74,9 @@ function App() {
                 </Route>
                 <Route path='/login'>
                   <Login />
+                </Route>
+                <Route path='/profile'>
+                  <Profile />
                 </Route>
                 <Route path='/channel/:id'>
                   <Channel />
