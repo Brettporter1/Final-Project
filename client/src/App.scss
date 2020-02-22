@@ -152,7 +152,7 @@ header {
 }
 .drop-menu {
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -164,9 +164,14 @@ header {
   box-shadow: 3px 0px 55px rgba(0, 0, 0, 0.8);
   img {
   }
+  .drop-name {
+    font-weight: bold;
+    color: $accent;
+    font-size: 1.5rem;
+  }
   ul {
     list-style: none;
-    height: 100%;
+    height: 60%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -178,6 +183,16 @@ header {
       text-decoration: none;
     }
   }
+}
+
+/////////PROFILE FORM//////////
+#profile-form {
+  margin-top: 50px;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 ///////// LOGIN //////////////
@@ -871,5 +886,18 @@ header {
   }
   .comment-body a {
     color: $accent;
+  }
+}
+
+///////// MOBILE MEDIA QUERIES ///////
+
+@media only screen and (max-width: 540px) {
+  ///////// DROP MENU /////////
+  .drop-menu {
+    width: 100%;
+    height: 70%;
+    ul {
+      height: 80%;
+    }
   }
 }
