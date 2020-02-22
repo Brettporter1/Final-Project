@@ -1,25 +1,42 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import UserContext from '../../utils/UserContext';
 
-const dropMenu = () => {
+const DropMenu = props => {
+  const { user, setUser } = useContext(UserContext);
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    window.location.href = '/login';
+  };
+  useEffect(() => {
+    console.log(user, props.openMenu);
+  }, []);
   return (
     <nav className='drop-menu'>
       <ul>
         <li>
-          <NavLink to='/uid/profile'>Update Profile</NavLink>
+          <img src={user.photo} />
+          <h3 className='drop-name'>{user.username}</h3>
         </li>
         <li>
-          <NavLink to='/uid/favorites'>Favorites</NavLink>
+          <NavLink to='/profile' onClick={props.onClick}>
+            Update Profile
+          </NavLink>
         </li>
         <li>
-          <NavLink to='/uid/comments'>Recent Comments</NavLink>
+          <NavLink to='/uid/favorites' onClick={props.onClick}>
+            Favorites
+          </NavLink>
         </li>
         <li>
-          <NavLink to='/login'>Logout</NavLink>
+          <NavLink to='/login' onClick={() => handleLogout()}>
+            Logout
+          </NavLink>
         </li>
       </ul>
     </nav>
   );
 };
 
-export default dropMenu;
+export default DropMenu;

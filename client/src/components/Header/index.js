@@ -15,17 +15,9 @@ const Header = () => {
   const handleMenu = () => {
     setOpenMenu(state => !state);
     if (!openMenu) {
-      gsap.to('#start', 2, {
-        rotation: 360,
-        transformOrigin: '7px 7px',
-        morphSVG: '#end'
-      });
+      gsap.to('#start', 0.4, { morphSVG: '#end' });
     } else {
-      gsap.to('#start', 2, {
-        rotation: -360,
-        transformOrigin: '7px 7px',
-        morphSVG: '#start'
-      });
+      gsap.to('#start', 0.4, { morphSVG: '#start' });
     }
   };
 
@@ -36,7 +28,7 @@ const Header = () => {
   return (
     <Fragment>
       {openMenu ? <Backdrop onClick={() => handleMenu()} /> : null}
-      {openMenu && <DropMenu />}
+      {openMenu && <DropMenu onClick={() => handleMenu()} />}
       <header>
         <button className='menu-btn' onClick={() => handleMenu()}>
           <svg
