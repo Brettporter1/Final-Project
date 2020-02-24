@@ -1,5 +1,6 @@
 import React, { useState, createContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import {Image} from 'cloudinary-react';
 import { Howl, Howler } from 'howler';
 import Axios from 'axios';
 import './App.scss';
@@ -10,6 +11,7 @@ import Player from './components/Player';
 import Channel from './pages/Channel';
 import Track from './pages/Track'
 import Thread from './pages/Thread';
+import Profile from './components/Profile';
 import ChannelContext from './utils/ChannelContext';
 import TrackContext from './utils/TrackContext';
 import PlayContext from './utils/PlayContext';
