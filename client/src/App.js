@@ -11,6 +11,7 @@ import Channel from './pages/Channel';
 import Track from './pages/Track'
 import Thread from './pages/Thread';
 import ChannelContext from './utils/ChannelContext';
+import TrackContext from './utils/TrackContext';
 import PlayContext from './utils/PlayContext';
 import UserContext from './utils/UserContext';
 import ScrollToTop from './utils/ScrollToTop';
@@ -52,6 +53,7 @@ function App() {
     playing: false,
     progress: 0
   });
+  const [track, setTrack] = useState({});
   const updateUser = data => {
     setUser({ ...user, username: data.name, email: data.email, id: data.id });
   };
@@ -62,6 +64,7 @@ function App() {
     <PlayContext.Provider value={{currentTrack, setCurrentTrack}} >
     <ChannelContext.Provider value={{selectedChannel, setSelectedChannel}}>
     <UserContext.Provider value={{user, setUser}}>
+    <TrackContext.Provider value={{track, setTrack}} >
       <Router>
         <Header />
         <ScrollToTop/>
@@ -87,6 +90,7 @@ function App() {
           <Player/>
           : null
         }
+    </TrackContext.Provider>
     </UserContext.Provider>
     </ChannelContext.Provider>
     </PlayContext.Provider>

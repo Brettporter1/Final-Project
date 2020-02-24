@@ -93,6 +93,53 @@ router.get('/posts/:track', (req, res, next) => {
     });
   // .catch(error => res.json(error));
 });
+router.get('/thread/:id', (req, res, next) => {
+  console.log('req.params.id');
+  console.log(req.params.id);
+  Comment.findById(req.params.id)
+    .populate([
+      {
+        path: 'user',
+        model: 'User',
+      },
+      {
+        path: 'votes',
+        model: 'Vote',
+      },
+      {
+        path: 'children',
+        model: 'Comment',
+        populate: [
+          {
+            path: 'user',
+            model: 'User',
+          },
+          {
+            path: 'votes',
+            model: 'Vote',
+          },
+          {
+            path: 'children',
+            model: 'Comment',
+            populate: [
+              {
+                path: 'user',
+                model: 'User',
+              },
+              {
+                path: 'votes',
+                model: 'Vote',
+              },
+            ],
+          },
+        ],
+      },
+    ])
+    .exec((err, result) => {
+      if (err) console.log(err);
+      res.json(result);
+    });
+});
 router.post('/rss', function(req, res, next) {
   const { url } = req.body;
   console.log(url);
@@ -144,6 +191,7 @@ router.post(
   '/make-comment',
   passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
+    console.log(req.body.parent);
     const getChannel = () =>
       new Promise(resolve => {
         Channel.findOne(
@@ -200,6 +248,7 @@ router.post(
         user: ObjectId(req.user.id),
         message: req.body.message,
         podcast: track._id,
+        mainCommentId: req.body.parent || null,
       });
 
       NewComment.podcast = ObjectId(trk._id);
@@ -210,8 +259,15 @@ router.post(
           Podcast.findById(comment.podcast, (error, podcast) => {
             podcast.comments.push(comment);
             podcast.save();
-            res.json(comment);
           });
+          if (req.body.parent) {
+            Comment.findById(req.body.parent, (error, parent) => {
+              parent.children.push(comment);
+              parent.save();
+            });
+          }
+
+          res.json(comment);
         }
       });
     };
@@ -234,7 +290,7 @@ router.post(
       if (obj) {
         // eslint-disable-next-line prefer-destructuring
         type = obj.type;
-        Vote.deleteOne({ _id: obj._id }, (err, obj) => {
+        Vote.deleteOne({ _id: obj._id }, err => {
           if (err) console.log(err);
         });
       }
@@ -246,7 +302,7 @@ router.post(
         });
         NewVote.save((err, vote) => {
           if (err) {
-            res.json(err);
+            console.log(err);
           } else {
             Comment.findById(req.body.target, (error, comment) => {
               comment.votes.push(vote);
