@@ -77,6 +77,9 @@ function App() {
             <Route path="/login">
               <Login />
             </Route>
+            <Route path='/profile'>
+              <Profile />
+            </Route>
             <Route path="/channel/:id">
               <Channel />
             </Route>

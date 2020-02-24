@@ -174,27 +174,13 @@ header {
         height: 60%;
         display: flex;
         flex-direction: column;
-        z-index: 200;
-        background: $black;
-        position: fixed;
-        top: 0;
-        left: 0;
-        box-shadow: 3px 0px 55px rgba(0, 0, 0, 0.8);
-        img {
-        }
-        ul {
-            list-style: none;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            width: 90%;
-            text-align: center;
-            li a {
-                color: #ffffff;
-                font-size: 1.25rem;
-                text-decoration: none;
-            }
+        justify-content: space-around;
+        width: 90%;
+        text-align: center;
+        li a {
+            color: #ffffff;
+            font-size: 1.25rem;
+            text-decoration: none;
         }
     }
 }
