@@ -72,20 +72,20 @@ router.get('/searchpodcasts/:term', function(req, res, next) {
 router.get('/posts/:track', (req, res, next) => {
   console.log(req.params.track.replace(/~/g, '/').replace(/_/, '?'));
   Podcast.findOne({
-    'data.guid._text': req.params.track.replace(/~/g, '/').replace(/_/, '?'),
+    'data.guid._text': req.params.track.replace(/~/g, '/').replace(/_/, '?')
   })
     .populate({
       path: 'comments',
       populate: [
         {
           path: 'user',
-          model: 'User',
+          model: 'User'
         },
         {
           path: 'votes',
-          model: 'Vote',
-        },
-      ],
+          model: 'Vote'
+        }
+      ]
     })
 
     .exec((err, result) => {
@@ -101,11 +101,11 @@ router.get('/thread/:id', (req, res, next) => {
     .populate([
       {
         path: 'user',
-        model: 'User',
+        model: 'User'
       },
       {
         path: 'votes',
-        model: 'Vote',
+        model: 'Vote'
       },
       {
         path: 'children',
@@ -113,11 +113,11 @@ router.get('/thread/:id', (req, res, next) => {
         populate: [
           {
             path: 'user',
-            model: 'User',
+            model: 'User'
           },
           {
             path: 'votes',
-            model: 'Vote',
+            model: 'Vote'
           },
           {
             path: 'children',
@@ -125,16 +125,16 @@ router.get('/thread/:id', (req, res, next) => {
             populate: [
               {
                 path: 'user',
-                model: 'User',
+                model: 'User'
               },
               {
                 path: 'votes',
-                model: 'Vote',
-              },
-            ],
-          },
-        ],
-      },
+                model: 'Vote'
+              }
+            ]
+          }
+        ]
+      }
     ])
     .exec((err, result) => {
       if (err) console.log(err);
@@ -153,7 +153,7 @@ router.post('/rss', function(req, res, next) {
         ignoreComment: true,
         alwaysChildren: false,
         compact: true,
-        ignoreCdata: false,
+        ignoreCdata: false
       };
       const rssJson = convert.xml2js(response.data, options).rss.channel.item;
       rssJson.forEach(track => {
@@ -229,7 +229,7 @@ router.post(
               console.log('track not found');
               const NewPodcast = new Podcast({
                 data: req.body.podcast,
-                channel: chnl._id,
+                channel: chnl._id
               });
               NewPodcast.save((err, newTrack) => {
                 if (err) {
@@ -249,7 +249,7 @@ router.post(
         user: ObjectId(req.user.id),
         message: req.body.message,
         podcast: track._id,
-        mainCommentId: req.body.parent || null,
+        mainCommentId: req.body.parent || null
       });
 
       NewComment.podcast = ObjectId(trk._id);
@@ -299,7 +299,7 @@ router.post(
         const NewVote = new Vote({
           user: ObjectId(req.user.id),
           target: req.body.target,
-          type: req.body.type,
+          type: req.body.type
         });
         NewVote.save((err, vote) => {
           if (err) {
@@ -328,7 +328,7 @@ router.post(
     check(
       'password',
       'Please enter a password with at least 6 characters'
-    ).isLength({ min: 6 }),
+    ).isLength({ min: 6 })
   ],
   (req, res, next) => {
     let errors = validationResult(req);
@@ -352,7 +352,7 @@ router.post(
             console.log(newUser);
             const payload = {
               id: newUser._id,
-              name: newUser.userName,
+              name: newUser.userName
             };
             jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
               if (err)
@@ -361,7 +361,7 @@ router.post(
                   .json({ error: 'Error signing token', raw: err });
               res.json({
                 success: true,
-                token: `Bearer ${token}`,
+                token: `Bearer ${token}`
               });
             });
           });
@@ -384,14 +384,14 @@ router.post('/login', function(req, res, next) {
       if (isMatch) {
         const payload = {
           id: user._id,
-          name: user.userName,
+          name: user.userName
         };
         jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
           if (err)
             res.status(500).json({ error: 'Error signing token', raw: err });
           res.json({
             success: true,
-            token: `Bearer ${token}`,
+            token: `Bearer ${token}`
           });
         });
       } else {
@@ -402,21 +402,35 @@ router.post('/login', function(req, res, next) {
   });
 });
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
+});
 router.post('/image-upload', (req, res, next) => {
-  const image = req.body.file;
+  console.log(req.files);
+  const image = req.files.file;
   console.log(image);
-  cloudinary.uploader.upload(image, (err, image) => {
-    console.log();
-    console.log('** File Upload');
-    if (err) {
-      console.warn(err);
-    }
-    console.log(
-      "* public_id for the uploaded image is generated by Cloudinary's service."
-    );
-    console.log(`* ${image.public_id}`);
-    console.log(`* ${image.url}`);
-    waitForAllUploads('image', err, image);
-  });
+  cloudinary.uploader
+    .upload(image.tempFilePath, { tags: 'express_sample' })
+    .then(function(err, image) {
+      console.log(err);
+      console.log('** file uploaded to Cloudinary service');
+      console.dir(image);
+      // photo.image = image;
+      // Save photo with image metadata
+      return image.save();
+    })
+    .then(function() {
+      console.log('** photo saved');
+      res.json('uploaded');
+    })
+    .catch(err => res.json(err));
+  // .finally(function() {
+  //   res.render('photos/create_through_server', {
+  //     photo: photo,
+  //     upload: photo.image
+  //   });
+  // });
 });
 module.exports = router;
