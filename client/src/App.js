@@ -68,7 +68,7 @@ function App() {
         >
           <UserContext.Provider value={{ user, setUser }}>
             <TrackContext.Provider value={{ track, setTrack }}>
-              <Router>
+              <Router basename="/app">
                 <Header />
                 <ScrollToTop />
                 <Switch>
