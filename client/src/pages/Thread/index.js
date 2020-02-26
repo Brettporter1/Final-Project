@@ -30,6 +30,9 @@ const Thread = () => {
     const reply = (parent) => {
         setComment({...setComment, commenting: true, parent:parent})
     }
+    const refreshThread = () => {
+        setVotedCount(votedCount + 1);
+    }
     const childComments = mainComment.children ? (
         mainComment.children.map(child => {
             return (
@@ -38,6 +41,7 @@ const Thread = () => {
                         data={child}
                         comment={comment}
                         setComment={setComment}
+                        refreshThread={refreshThread}
                     />
                     {
                     child ? (
@@ -49,6 +53,7 @@ const Thread = () => {
                                 level={2}
                                 index={i}
                                 key={i}
+                                refreshThread={refreshThread}
                             />
                     ))) : null
                     }
