@@ -11,11 +11,11 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const apiRouter = require('./routes/api');
 const aboutRouter = require('./routes/about');
-const fileUpload = require('express-fileupload');
 
 var app = express();
 // view engine setup
@@ -29,7 +29,7 @@ app.use(
   fileUpload({
     useTempFiles: true,
     tempFileDir: '/tmp/',
-    debug: true
+    debug: true,
   })
 );
 app.use(express.urlencoded({ extended: false }));
@@ -40,10 +40,11 @@ app.use(
     src: path.join(__dirname, 'public'),
     dest: path.join(__dirname, 'public'),
     indentedSyntax: false, // true = .sass and false = .scss
-    sourceMap: true
+    sourceMap: true,
   })
 );
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/app', express.static(path.join(__dirname, 'client/build')));
 
 // custom Middleware for logging the each request going to the API
 // app.use((req, res, next) => {
@@ -65,19 +66,19 @@ app.use(
     secret: 'dasdasdas4324213',
     proxy: true,
     // resave: false,
-    // saveUninitialized: true,
-    cookie: {
-      secure: false,
-      sameSite: false,
-      path: '/',
-      domain: 'localhost:3000',
-      maxAge: 1000 * 60 * 24
-    }
+    // // saveUninitialized: true,
+    // cookie: {
+    //   secure: false,
+    //   sameSite: false,
+    //   path: '/',
+    //   domain: 'localhost:3000',
+    //   maxAge: 1000 * 60 * 24
+    // }
   })
 );
-app.use(
-  cors({ credentials: true, origin: 'localhost:3000', preflightContinue: true })
-);
+// app.use(
+//   cors({ credentials: true, origin: 'localhost:3000', preflightContinue: true })
+// );
 
 // Passport config
 app.use(passport.initialize());
