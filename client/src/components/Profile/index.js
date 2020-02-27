@@ -4,19 +4,31 @@ import Axios from 'axios';
 
 function Profile() {
   const { user, setUser } = useContext(UserContext);
-  const handleUpload = e => {
+  const handleUpload = async e => {
     e.preventDefault();
     console.log(e);
-    const formdata = new FormData();
-    formdata.append('file', user.photo);
-    Axios.post('/api/image-upload', formdata, {
-      headers: {
-        'content-type': 'multi-part/formdata'
+    const formData = new FormData();
+    formData.append('file', user.photo);
+    formData.append('upload_preset', 'ed5b8zfa');
+    const response = await Axios.post(
+      `/api/image-upload/${user.id}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${localStorage.getItem('jwt')}`
+        }
       }
-    });
+    );
+    console.log(response);
+    document.getElementById('profile-form').reset();
   };
   return (
-    <form id='profile-form' onSubmit={e => handleUpload(e)}>
+    <form
+      id='profile-form'
+      onSubmit={e => handleUpload(e)}
+      enctype='multipart/form-data'
+    >
       <input
         type='text'
         placeholder='username'
@@ -26,6 +38,7 @@ function Profile() {
         type='file'
         id='image-upload'
         accept='png, jpeg'
+        name='file'
         onChange={e => setUser({ ...user, photo: e.target.files[0] })}
       />
       <button className='btn big' type='submit'>

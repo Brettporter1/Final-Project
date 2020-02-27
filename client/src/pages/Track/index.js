@@ -2,20 +2,23 @@ import React, {useEffect, useContext, useState} from 'react';
 import TrackHeader from '../../components/TrackHeader';
 import Posts from '../../components/Posts';
 import playContext from '../../utils/PlayContext';
-import ChannelContext from '../../utils/ChannelContext'
-
+import ChannelContext from '../../utils/ChannelContext';
+import TrackContext from '../../utils/TrackContext';
+import MakeComment from '../../components/MakeComment';
 import {useParams, Link} from 'react-router-dom';
+import sendComment from '../../utils/sendComment';
 import Axios from 'axios';
 import moment from 'moment';
 const Track = () => {
     const guidRaw = useParams().guid;
     const guid = useParams().guid.replace(/~/g, '/').replace(/\_/, '?');
     const {selectedChannel, setSelectedChannel} = useContext(ChannelContext);
-    const [track, setTrack] = useState({});
+    const {track, setTrack} = useContext(TrackContext);
     const [comment, setComment] = useState({
         comment: '',
         commenting: false,
     });
+
     const [votedCount, setVotedCount] = useState(0);
 
     useEffect(() => {
@@ -49,73 +52,55 @@ const Track = () => {
        
 
       
-    }, [comment.commenting, votedCount])
-        const makeComment = (e) => {
-            e.preventDefault();
-            if (track.guid) {
-                Axios.post(
-                    '/api/make-comment', {
-                     podcast: track, 
-                     channel: selectedChannel,
-                     message: comment.comment,
-                    },
-                     {
-                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `${localStorage.getItem('jwt')}`
-                            }, 
-                     }
-                )
-                .then(res => {
-                    console.log(res.data);
-                    setComment({comment: '', commenting: false});
-                })
-            }
-        };
-        const handleVote = (comment, type ) => {
+    }, [comment.commenting, votedCount]);
+
+    const makeComment = (e) => {
+        e.preventDefault();
+        if (track.guid) {
             Axios.post(
-                '/api/vote', {
-                 target: comment, 
-                 type: type,
+                '/api/make-comment', {
+                    podcast: track, 
+                    channel: selectedChannel,
+                    message: comment.comment,
                 },
-                 {
-                     headers: {
+                    {
+                        headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${localStorage.getItem('jwt')}`
                         }, 
-                 }
+                    }
             )
             .then(res => {
                 console.log(res.data);
-                setVotedCount(votedCount + 1);
+                setComment({comment: '', commenting: false});
             })
-        };
-    
+        }
+    };
+        
         
     return (
         <div className="track-component">
-            <TrackHeader 
-                title={selectedChannel.collectionName} 
-                desc={(track.title ? (track.title._text || track.title._cdata) : null)}
-                duration={(track['itunes:duration'] ? track['itunes:duration']._text || track['itunes:duration']._cdata : null)}
-                date={moment(track.pubDate ? track.pubDate._text || track.pubDate._cdata : null).format('MMM Do')}
-            />
+            {track.title ? (
+                <TrackHeader 
+                    title={selectedChannel.collectionName} 
+                    desc={(track.title ? (track.title._text || track.title._cdata) : null)}
+                    duration={(track['itunes:duration'] ? track['itunes:duration']._text || track['itunes:duration']._cdata : null)}
+                    date={moment(track.pubDate ? track.pubDate._text || track.pubDate._cdata : null).format('MMM Do')}
+                />
+
+            ) : null}
             <div className="add-comment">
                 <button onClick={() => {setComment({...comment, commenting: true})}} className="btn outline">Add a Comment</button>
             </div>
-            <Posts handleVote={handleVote} posts={track.posts ? track.posts : []}/>
+            <Posts posts={track.posts ? track.posts : []} refreshTrack={() => setVotedCount(votedCount + 1)}/>
             {comment.commenting ? (
-                <form action="#" className="comment-form">
-                    <div className="header">
-                        <p><span>Commenting on: </span>{(track.title ? (track.title._text || track.title._cdata) : null)}</p>
-                    </div>
-                    <textarea onChange={(e) => {setComment({...comment, comment: e.target.value})}} autoFocus></textarea>
-                    <div className="actions">
-                        <button onClick={() => {setComment({...comment, commenting: false})}} type="reset" className="btn cancel fill-gray">Cancel</button>
-                        <button onClick={(e) => makeComment(e)}type="submit" className="btn submit outline">Submit</button>
-                    </div>
-                </form>
-
+                <MakeComment 
+                    track={track}
+                    makeComment={sendComment}
+                    comment={comment}
+                    setComment={setComment}
+                    channel={selectedChannel}
+                />
             ) : null}
         </div>
     )

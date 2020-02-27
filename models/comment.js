@@ -10,6 +10,7 @@ const commentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Podcast',
     },
+    children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     message: {
       type: String,
       required: true,
@@ -23,8 +24,8 @@ const commentSchema = new mongoose.Schema(
       default: false,
     },
     mainCommentId: {
-      type: String,
-      default: null,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment',
     },
     votes: [
       {

@@ -1,6 +1,5 @@
 import React, { useState, createContext, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import {Image} from 'cloudinary-react';
+import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import { Howl, Howler } from 'howler';
 import Axios from 'axios';
 import './App.scss';
@@ -10,8 +9,10 @@ import Library from './pages/Library';
 import Player from './components/Player';
 import Channel from './pages/Channel';
 import Track from './pages/Track';
+import Thread from './pages/Thread';
 import Profile from './components/Profile';
 import ChannelContext from './utils/ChannelContext';
+import TrackContext from './utils/TrackContext';
 import PlayContext from './utils/PlayContext';
 import UserContext from './utils/UserContext';
 import ScrollToTop from './utils/ScrollToTop';
@@ -44,6 +45,7 @@ function App() {
     username: '',
     email: '',
     id: '',
+    photo: '',
     checkUser: () => checkUser()
   });
   const [currentTrack, setCurrentTrack] = useState({
@@ -53,8 +55,15 @@ function App() {
     playing: false,
     progress: 0
   });
+  const [track, setTrack] = useState({});
   const updateUser = data => {
-    setUser({ ...user, username: data.name, email: data.email, id: data.id });
+    setUser({
+      ...user,
+      username: data.name,
+      email: data.email,
+      id: data.id,
+      photo: data.photo
+    });
   };
 
   const [selectedChannel, setSelectedChannel] = useState({});
@@ -65,28 +74,33 @@ function App() {
           value={{ selectedChannel, setSelectedChannel }}
         >
           <UserContext.Provider value={{ user, setUser }}>
-            <Router>
-              <Header />
-              <ScrollToTop />
-              <Switch>
-                <Route exact path='/'>
-                  <Library />
-                </Route>
-                <Route path='/login'>
-                  <Login />
-                </Route>
-                <Route path='/profile'>
-                  <Profile />
-                </Route>
-                <Route path='/channel/:id'>
-                  <Channel />
-                </Route>
-                <Route path='/track/:guid'>
-                  <Track />
-                </Route>
-              </Switch>
-            </Router>
-            {currentTrack.track ? <Player /> : null}
+            <TrackContext.Provider value={{ track, setTrack }}>
+              <Router>
+                <Header />
+                <ScrollToTop />
+                <Switch>
+                  <Route exact path='/'>
+                    <Library />
+                  </Route>
+                  <Route path='/login'>
+                    <Login />
+                  </Route>
+                  <Route path='/profile'>
+                    <Profile />
+                  </Route>
+                  <Route path='/channel/:id'>
+                    <Channel />
+                  </Route>
+                  <Route path='/track/:guid'>
+                    <Track />
+                  </Route>
+                  <Route path='/thread/:id'>
+                    <Thread />
+                  </Route>
+                </Switch>
+              </Router>
+              {currentTrack.track ? <Player /> : null}
+            </TrackContext.Provider>
           </UserContext.Provider>
         </ChannelContext.Provider>
       </PlayContext.Provider>

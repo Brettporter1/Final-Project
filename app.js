@@ -1,19 +1,20 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var cookieSession = require('cookie-session');
-var logger = require('morgan');
-var sassMiddleware = require('node-sass-middleware');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var session = require('express-session');
-var cors = require('cors');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var apiRouter = require('./routes/api');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+const logger = require('morgan');
+const sassMiddleware = require('node-sass-middleware');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+const cors = require('cors');
+const fileUpload = require('express-fileupload');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const apiRouter = require('./routes/api');
 const aboutRouter = require('./routes/about');
 
 var app = express();
@@ -24,7 +25,13 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(bodyParser());
-// app.use(cookieSession());
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+    debug: true,
+  })
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
@@ -36,7 +43,8 @@ app.use(
     sourceMap: true,
   })
 );
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/app', express.static(path.join(__dirname, 'client/build')));
 
 // custom Middleware for logging the each request going to the API
 // app.use((req, res, next) => {
@@ -58,19 +66,19 @@ app.use(
     secret: 'dasdasdas4324213',
     proxy: true,
     // resave: false,
-    // saveUninitialized: true,
-    cookie: {
-      secure: false,
-      sameSite: false,
-      path: '/',
-      domain: 'localhost:3000',
-      maxAge: 1000 * 60 * 24,
-    },
+    // // saveUninitialized: true,
+    // cookie: {
+    //   secure: false,
+    //   sameSite: false,
+    //   path: '/',
+    //   domain: 'localhost:3000',
+    //   maxAge: 1000 * 60 * 24
+    // }
   })
 );
-app.use(
-  cors({ credentials: true, origin: 'localhost:3000', preflightContinue: true })
-);
+// app.use(
+//   cors({ credentials: true, origin: 'localhost:3000', preflightContinue: true })
+// );
 
 // Passport config
 app.use(passport.initialize());

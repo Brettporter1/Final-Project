@@ -41,26 +41,30 @@ const Header = () => {
             <g>
               <polygon
                 id='end'
-                class='st0'
-                points='18.6,6.8 17.1,5.3 12,10.5 6.8,5.3 5.3,6.8 10.5,11.9 5.3,17.1 6.8,18.6 12,13.4 17.1,18.6 18.6,17.1 
-		13.4,11.9 	'
+                className='st0'
+                points='18.6,6.8 17.1,5.3 12,10.5 6.8,5.3 5.3,6.8 10.5,11.9 5.3,17.1 6.8,18.6 12,13.4 17.1,18.6 18.6,17.1 13.4,11.9'
               />
             </g>
             <g>
               <path
                 id='start'
-                class='st0'
+                className='st0'
                 d='M3.2,11h13v2.2h-13V11z M3.2,5.5h17.4v2.2H3.2V5.5z M3.2,18.6h7.9v-2.2H3.2V18.6z'
               />
             </g>
           </svg>
         </button>
-
         <Link to={'/'}>
           <h1>PODCHAT</h1>
         </Link>
         {user.id !== '' ? (
-          <Link className='user-btn'>{user.username}</Link>
+          <Link to={'/profile'} className='user-btn'>
+            {user.photo ? (
+              <img className='profile-img' src={user.photo} />
+            ) : (
+              user.username
+            )}
+          </Link>
         ) : (
           <Link to={'/login'} className='sign-in-btn'>
             Sign In
