@@ -10,8 +10,18 @@ function Profile() {
     const formData = new FormData();
     formData.append('file', user.photo);
     formData.append('upload_preset', 'ed5b8zfa');
-    const response = await Axios.post('/api/image-upload', formData);
-    console.log(`this is formData: ${response}`);
+    const response = await Axios.post(
+      `/api/image-upload/${user.id}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${localStorage.getItem('jwt')}`
+        }
+      }
+    );
+    console.log(response);
+    document.getElementById('profile-form').reset();
   };
   return (
     <form

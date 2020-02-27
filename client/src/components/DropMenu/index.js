@@ -10,13 +10,13 @@ const DropMenu = props => {
     window.location.href = '/login';
   };
   useEffect(() => {
-    console.log(user, props.openMenu);
+    console.log(user);
   }, []);
   return (
     <nav className='drop-menu'>
       <ul>
         <li>
-          <img src={user.photo} />
+          <img className='profile-img' src={user.photo} />
           <h3 className='drop-name'>{user.username}</h3>
         </li>
         <li>

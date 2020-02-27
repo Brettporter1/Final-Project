@@ -58,7 +58,13 @@ const Header = () => {
           <h1>PODCHAT</h1>
         </Link>
         {user.id !== '' ? (
-          <Link className='user-btn'>{user.username}</Link>
+          <Link to={'/profile'} className='user-btn'>
+            {user.photo ? (
+              <img className='profile-img' src={user.photo} />
+            ) : (
+              user.username
+            )}
+          </Link>
         ) : (
           <Link to={'/login'} className='sign-in-btn'>
             Sign In

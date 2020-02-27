@@ -45,6 +45,7 @@ function App() {
     username: '',
     email: '',
     id: '',
+    photo: '',
     checkUser: () => checkUser()
   });
   const [currentTrack, setCurrentTrack] = useState({
@@ -56,7 +57,13 @@ function App() {
   });
   const [track, setTrack] = useState({});
   const updateUser = data => {
-    setUser({ ...user, username: data.name, email: data.email, id: data.id });
+    setUser({
+      ...user,
+      username: data.name,
+      email: data.email,
+      id: data.id,
+      photo: data.photo
+    });
   };
 
   const [selectedChannel, setSelectedChannel] = useState({});

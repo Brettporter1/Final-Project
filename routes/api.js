@@ -33,7 +33,13 @@ router.get(
   '/check-user',
   passport.authenticate('jwt', { session: false }),
   function(req, res, next) {
-    res.json(req.user);
+    const photo = cloudinary.url(req.user.photo, {
+      width: 100,
+      height: 100,
+      crop: 'fill'
+    });
+    const response = { ...req.user, photo: photo };
+    res.json(response);
   }
 );
 
@@ -407,30 +413,36 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_KEY,
   api_secret: process.env.CLOUDINARY_SECRET
 });
-router.post('/image-upload', (req, res, next) => {
-  console.log(req.files);
-  const image = req.files.file;
-  console.log(image);
-  cloudinary.uploader
-    .upload(image.tempFilePath, { tags: 'express_sample' })
-    .then(function(err, image) {
-      console.log(err);
-      console.log('** file uploaded to Cloudinary service');
-      console.dir(image);
-      // photo.image = image;
-      // Save photo with image metadata
-      return image.save();
-    })
-    .then(function() {
-      console.log('** photo saved');
-      res.json('uploaded');
-    })
-    .catch(err => res.json(err));
-  // .finally(function() {
-  //   res.render('photos/create_through_server', {
-  //     photo: photo,
-  //     upload: photo.image
-  //   });
-  // });
-});
+try {
+  router.post(
+    '/image-upload/:id',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res, next) => {
+      const image = req.files.file;
+      console.log(image);
+      const cloudinaryResponse = await cloudinary.uploader.upload(
+        image.tempFilePath,
+        {
+          tags: 'express_sample'
+        },
+        (err, image) => {
+          console.error(err);
+          console.log('** file uploaded to Cloudinary service');
+          console.log(image);
+          return image;
+        }
+      );
+      await User.findByIdAndUpdate(
+        req.user.id,
+        { photo: cloudinaryResponse.public_id },
+        { new: true, useFindAndModify: false },
+        user => {
+          res.json(user); // ?
+        }
+      );
+    }
+  );
+} catch {
+  err => res.json(err);
+}
 module.exports = router;

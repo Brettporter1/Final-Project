@@ -10,7 +10,7 @@ const User = require('../models/user');
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: secret,
+  secretOrKey: secret
 };
 // this sets how we handle tokens coming from the requests that come
 // and also defines the key to be used when verifying the token.
@@ -24,6 +24,7 @@ module.exports = passport => {
               id: user.id,
               name: user.username,
               email: user.email,
+              photo: user.photo
             });
           }
           return done(null, false);
