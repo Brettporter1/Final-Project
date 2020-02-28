@@ -1,13 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import UserContext from '../../utils/UserContext';
+
 
 const DropMenu = props => {
   const { user, setUser } = useContext(UserContext);
+  const [rePath, setRePath] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem('jwt');
-    window.location.href = '/login';
+    setUser({...user,
+      username: '',
+      email: '',
+      id: '',
+      photo: '',});
+      props.setOpen(false)
   };
   useEffect(() => {
     console.log(user);
@@ -30,7 +37,7 @@ const DropMenu = props => {
           </NavLink>
         </li>
         <li>
-          <NavLink to='/login' onClick={() => handleLogout()}>
+          <NavLink to='/login' onClick={() => {props.handleMenu(); handleLogout();}}>
             Logout
           </NavLink>
         </li>

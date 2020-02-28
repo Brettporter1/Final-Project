@@ -50,6 +50,8 @@ header {
   font-style: italic;
   color: #fba23b;
   border: none;
+  text-decoration: none;
+  text-align: center;
   background-color: #363c3a;
   border-radius: 4px;
   cursor: pointer;
