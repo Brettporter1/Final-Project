@@ -437,7 +437,7 @@ try {
         { photo: cloudinaryResponse.public_id },
         { new: true, useFindAndModify: false },
         user => {
-          res.json(user); // ?
+          res.json(user);
         }
       );
     }
