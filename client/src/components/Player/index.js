@@ -94,12 +94,12 @@ const Player = () => {
 
                 </div>
                 <div className="inner">
-                    <button className="previous">
+                    {/* <button className="previous">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M16 7l-7 5l7 5zm-7 5V7H7v10h2z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
                     </button>
                     <button className="next">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" ><path d="M7 7v10l7-5zm9 10V7h-2v10z" fill="#626262"/><rect x="0" y="0" width="24" height="24" fill="rgba(0, 0, 0, 0)" /></svg>
-                    </button>
+                    </button> */}
                     {!currentTrack.playing ? (
 
                         <button className="play" onClick={() => setCurrentTrack({...currentTrack, playing: true})}>

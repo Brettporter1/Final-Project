@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Channel' }],
 });
 
 const User = mongoose.model('User', userSchema);

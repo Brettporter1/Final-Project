@@ -36,9 +36,9 @@ router.get(
     const photo = cloudinary.url(req.user.photo, {
       width: 100,
       height: 100,
-      crop: 'fill'
+      crop: 'fill',
     });
-    const response = { ...req.user, photo: photo };
+    const response = { ...req.user, photo };
     res.json(response);
   }
 );
@@ -78,20 +78,20 @@ router.get('/searchpodcasts/:term', function(req, res, next) {
 router.get('/posts/:track', (req, res, next) => {
   console.log(req.params.track.replace(/~/g, '/').replace(/_/, '?'));
   Podcast.findOne({
-    'data.guid._text': req.params.track.replace(/~/g, '/').replace(/_/, '?')
+    'data.guid._text': req.params.track.replace(/~/g, '/').replace(/_/, '?'),
   })
     .populate({
       path: 'comments',
       populate: [
         {
           path: 'user',
-          model: 'User'
+          model: 'User',
         },
         {
           path: 'votes',
-          model: 'Vote'
-        }
-      ]
+          model: 'Vote',
+        },
+      ],
     })
 
     .exec((err, result) => {
@@ -107,11 +107,11 @@ router.get('/thread/:id', (req, res, next) => {
     .populate([
       {
         path: 'user',
-        model: 'User'
+        model: 'User',
       },
       {
         path: 'votes',
-        model: 'Vote'
+        model: 'Vote',
       },
       {
         path: 'children',
@@ -119,11 +119,11 @@ router.get('/thread/:id', (req, res, next) => {
         populate: [
           {
             path: 'user',
-            model: 'User'
+            model: 'User',
           },
           {
             path: 'votes',
-            model: 'Vote'
+            model: 'Vote',
           },
           {
             path: 'children',
@@ -131,16 +131,16 @@ router.get('/thread/:id', (req, res, next) => {
             populate: [
               {
                 path: 'user',
-                model: 'User'
+                model: 'User',
               },
               {
                 path: 'votes',
-                model: 'Vote'
-              }
-            ]
-          }
-        ]
-      }
+                model: 'Vote',
+              },
+            ],
+          },
+        ],
+      },
     ])
     .exec((err, result) => {
       if (err) console.log(err);
@@ -159,7 +159,7 @@ router.post('/rss', function(req, res, next) {
         ignoreComment: true,
         alwaysChildren: false,
         compact: true,
-        ignoreCdata: false
+        ignoreCdata: false,
       };
       const rssJson = convert.xml2js(response.data, options).rss.channel.item;
       rssJson.forEach(track => {
@@ -192,7 +192,91 @@ router.post('/rss', function(req, res, next) {
       console.log(err);
     });
 });
+router.post(
+  '/follow',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    const getChannel = () => {
+      // sets up promise for async bullshit
+      const promise = new Promise(resolve => {
+        console.log(req.body.channel.collectionId);
+        // search channels for match
+        Channel.findOne(
+          { 'data.collectionId': req.body.channel.collectionId },
+          (err, thisChannel) => {
+            // should be returning the channel it found
+            console.log(err);
+            console.log('getting channel...');
+            // check if the channel exists
 
+            if (!thisChannel) {
+              console.log('making new channel record');
+              // save a new one if it doesn't
+              const NewChannel = new Channel({ data: req.body.channel });
+              // add the user to it's followers object
+              if (NewChannel.followers) {
+                NewChannel.followers.push(ObjectId(req.user.id));
+              } else {
+                NewChannel.followers = [];
+                NewChannel.followers.push(ObjectId(req.user.id));
+              }
+              // save it
+              NewChannel.save((err, thisNewChannel) => {
+                if (err) {
+                  res.json(err);
+                }
+                console.log(thisNewChannel);
+              });
+              // if it did exist, just save the user to it
+            } else {
+              User.findOneAndUpdate(
+                { _id: req.user.id },
+                { $pull: { following: thisChannel._id } },
+                (err, data) => {
+                  console.log(err);
+                  console.log(data);
+                }
+              );
+              User.findOneAndUpdate(
+                { _id: thisChannel._id },
+                { $pull: { following: req.user.id } },
+                (err, data) => {
+                  console.log(err);
+                  console.log(data);
+                }
+              );
+
+              if (thisChannel.followers) {
+                thisChannel.followers.push(ObjectId(req.user.id));
+              } else {
+                thisChannel.followers = [];
+                thisChannel.followers.push(ObjectId(req.user.id));
+              }
+              thisChannel.save();
+              console.log(thisChannel);
+            }
+            resolve(thisChannel);
+          }
+        );
+      });
+      return promise;
+    };
+    // get the user and add the channel to it
+    const getUser = theChannel => {
+      const promise = new Promise(resolve => {
+        User.findById(req.user.id, (err, thisUser) => {
+          console.log(err);
+          thisUser.following.push(ObjectId(theChannel._id));
+          thisUser.save();
+          resolve(thisUser);
+        });
+      });
+      return promise;
+    };
+    const channel = await getChannel();
+    res.json(await getUser(channel));
+  }
+);
 // Create comment and associate to podcast track
 router.post(
   '/make-comment',
@@ -201,9 +285,11 @@ router.post(
     console.log(req.body.parent);
     const getChannel = () =>
       new Promise(resolve => {
+        console.log(req.body.channel.collectionId);
         Channel.findOne(
-          { 'data.channelId': req.body.channel.channelId },
+          { 'data.collectionId': req.body.channel.collectionId },
           (err, thisChannel) => {
+            console.log(err);
             console.log('getting channel...');
             console.log(thisChannel);
             if (!thisChannel) {
@@ -235,7 +321,7 @@ router.post(
               console.log('track not found');
               const NewPodcast = new Podcast({
                 data: req.body.podcast,
-                channel: chnl._id
+                channel: chnl._id,
               });
               NewPodcast.save((err, newTrack) => {
                 if (err) {
@@ -255,7 +341,7 @@ router.post(
         user: ObjectId(req.user.id),
         message: req.body.message,
         podcast: track._id,
-        mainCommentId: req.body.parent || null
+        mainCommentId: req.body.parent || null,
       });
 
       NewComment.podcast = ObjectId(trk._id);
@@ -305,7 +391,7 @@ router.post(
         const NewVote = new Vote({
           user: ObjectId(req.user.id),
           target: req.body.target,
-          type: req.body.type
+          type: req.body.type,
         });
         NewVote.save((err, vote) => {
           if (err) {
@@ -334,7 +420,7 @@ router.post(
     check(
       'password',
       'Please enter a password with at least 6 characters'
-    ).isLength({ min: 6 })
+    ).isLength({ min: 6 }),
   ],
   (req, res, next) => {
     let errors = validationResult(req);
@@ -358,7 +444,7 @@ router.post(
             console.log(newUser);
             const payload = {
               id: newUser._id,
-              name: newUser.userName
+              name: newUser.userName,
             };
             jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
               if (err)
@@ -367,7 +453,7 @@ router.post(
                   .json({ error: 'Error signing token', raw: err });
               res.json({
                 success: true,
-                token: `Bearer ${token}`
+                token: `Bearer ${token}`,
               });
             });
           });
@@ -390,14 +476,14 @@ router.post('/login', function(req, res, next) {
       if (isMatch) {
         const payload = {
           id: user._id,
-          name: user.userName
+          name: user.userName,
         };
         jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
           if (err)
             res.status(500).json({ error: 'Error signing token', raw: err });
           res.json({
             success: true,
-            token: `Bearer ${token}`
+            token: `Bearer ${token}`,
           });
         });
       } else {
@@ -411,7 +497,7 @@ router.post('/login', function(req, res, next) {
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET
+  api_secret: process.env.CLOUDINARY_SECRET,
 });
 try {
   router.post(
@@ -423,7 +509,7 @@ try {
       const cloudinaryResponse = await cloudinary.uploader.upload(
         image.tempFilePath,
         {
-          tags: 'express_sample'
+          tags: 'express_sample',
         },
         (err, image) => {
           console.error(err);

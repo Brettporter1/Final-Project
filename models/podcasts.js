@@ -10,6 +10,8 @@ const podcastSchema = new mongoose.Schema(
     data: mongoose.Schema.Types.Mixed,
 
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },
   {
     toJSON: {

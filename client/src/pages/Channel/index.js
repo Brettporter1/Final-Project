@@ -5,6 +5,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {useParams, Link} from 'react-router-dom';
 import {useTrail, useSpring, animated} from 'react-spring';
+import Axios from 'axios';
 
 const Channel = () => {
     const {currentTrack, setCurrentTrack} = useContext(PlayContext);
@@ -44,6 +45,22 @@ const Channel = () => {
         
         
     }, []);
+
+    const handleFollow = () => {
+        Axios.post(
+            '/api/follow',
+            {channel: selectedChannel},
+            {
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${localStorage.getItem('jwt')}`
+                }, 
+            }
+
+        ).then((res) => {
+            console.log(res.data)
+        })
+    }
    
     const listTracks = trail.map(({...rest}, i) =>
 
@@ -78,6 +95,11 @@ const Channel = () => {
                 </div>
                 <animated.h1 style={transition}>{selectedChannel.collectionName}</animated.h1>
                 <animated.img style={transition} src={selectedChannel.artworkUrl600} alt={selectedChannel.collectionName}/>
+                {/* <div className="actions">
+                    <button onClick={() => handleFollow()} className="btn outline">
+                        Follow
+                    </button>
+                </div> */}
             </div>
             <div className="track-list" id="track-list">
                 {loading ? (
