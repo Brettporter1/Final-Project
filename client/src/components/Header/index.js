@@ -20,7 +20,7 @@ const Header = () => {
       gsap.to('#start', 0.4, { morphSVG: '#start' });
     }
   };
-
+    
   useEffect(() => {
     user.checkUser();
   }, []);
@@ -28,7 +28,7 @@ const Header = () => {
   return (
     <Fragment>
       {openMenu ? <Backdrop onClick={() => handleMenu()} /> : null}
-      {openMenu && <DropMenu onClick={() => handleMenu()} />}
+      {openMenu && <DropMenu handleMenu={() => handleMenu()} setOpen={() => setOpenMenu()} onClick={() => handleMenu()} />}
       <header>
         <button className='menu-btn' onClick={() => handleMenu()}>
           <svg

@@ -12,7 +12,7 @@ const Comment = ({data, setComment, comment, level, index, refreshThread}) => {
     )
     const userVoted = useMemo(
         () => {
-            const userVote = data.votes.find((vote) => vote.user._id === user._id);
+            const userVote = data.votes.find((vote) => vote.user._id === user.id);
             if (userVote) {
                 return userVote.type;
             } else {
