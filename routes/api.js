@@ -427,10 +427,14 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, username, password } = req.body;
+    const { email, username, password, confirmPassword } = req.body;
     User.findOne({ email }).then(user => {
       if (user) {
         errors = { msg: 'Email  Exists in Database.' };
+        return res.status(400).json({ errors: [errors] });
+      }
+      if (confirmPassword !== password) {
+        errors = { msg: "Passwords don't match" };
         return res.status(400).json({ errors: [errors] });
       }
       const newUser = new User({ username, email, password });
