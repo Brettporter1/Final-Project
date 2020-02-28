@@ -31,6 +31,7 @@ const LoginForm = props => {
   };
   const handleLogin = e => {
     e.preventDefault();
+    console.log(e);
     axios
       .post('/api/login', {
         email: info.email,
@@ -42,7 +43,7 @@ const LoginForm = props => {
         user.checkUser();
         props.history.push('/');
       })
-      .catch(err => console.log(err.response.data));
+      .catch(err => setError(err.response.data));
   };
 
   const [info, setInfo] = useState({
@@ -62,7 +63,7 @@ const LoginForm = props => {
       className='login-form'
       onSubmit={e => handleRegister(e)}
     >
-      <p className='error'>{error}</p>
+      {error ? <p className='error'>{error}</p> : null}
       <input
         type='text'
         onChange={e => setInfo({ ...info, username: e.target.value })}
@@ -98,7 +99,7 @@ const LoginForm = props => {
       className='login-form'
       onSubmit={e => handleLogin(e)}
     >
-      <p className='error'>{error}</p>
+      {error ? <p className='error'>{error}</p> : null}
       <input
         type='text'
         onChange={e => setInfo({ ...info, email: e.target.value })}
