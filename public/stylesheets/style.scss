@@ -65,7 +65,9 @@ header {
 .btn {
   font-style: italic;
   color: $accent;
+  text-decoration: none;
   border: none;
+  text-align: center;
   background-color: $darkGray;
   border-radius: 4px;
   cursor: pointer;
