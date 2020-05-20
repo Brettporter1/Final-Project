@@ -9,3 +9,4 @@
 * React 
 * React-spring for animation
 * Node and Express
+* Cloudinary for profile photo hosting
